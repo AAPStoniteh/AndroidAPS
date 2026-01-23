@@ -45,7 +45,7 @@
     <!--    <string name="medtronic_history_group_statistic">Statistics</string>-->
     <!--    <string name="medtronic_history_group_unknown">Unknowns</string>-->
     <!--    <string name="medtronic_history_group_all">All</string>-->
-    <string name="medtronic_pump_history">Lịch sử Pump Medtronic</string>
+    <string name="medtronic_pump_history">Lịch sử bơm Medtronic</string>
     <!-- <string name="medtronic_cmd_profile_not_set">Remote Basal profile setting is not supported. Please modify Basal profile on your pump manually.</string> -->
     <string name="medtronic_cmd_cancel_bolus_not_supported">Bạn đã hủy liều Bolus sau khi nó đã được thiết lập trên bơm. Vì bơm Medtronic không hỗ trợ hủy trực tiếp, bạn sẽ cần hủy thủ công. Đặt bơm vào chế độ Suspend rồi thực hiện Resume (nếu bạn vẫn muốn hủy). Ứng dụng sẽ nhận các thay đổi này trong lần cập nhật tiếp theo (dưới 5 phút).</string>
     <string name="medtronic_cmd_cant_read_tbr">Không thể đọc TBR hiện tại.</string>
