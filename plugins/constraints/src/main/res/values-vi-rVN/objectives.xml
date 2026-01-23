@@ -6,11 +6,11 @@
     <string name="objectivenotstarted">Mục tiêu %1$d chưa được bắt đầu</string>
     <string name="objectivenotfinished">Mục tiêu %1$d chưa hoàn thành</string>
     <string name="objectives_0_objective">Thiết lập trực quan hóa và theo dõi, cũng như phân tích liều nền và các tỷ lệ</string>
-    <string name="objectives_0_gate">Xác minh rằng dữ liệu đường huyết (BG) có sẵn trong Nightscout và dữ liệu insulin từ bơm đang được tải lên</string>
+    <string name="objectives_0_gate">Xác minh rằng dữ liệu đường huyết có sẵn trong Nightscout và dữ liệu insulin từ bơm đang được tải lên</string>
     <string name="objectives_0_learned">Bạn đã thực hiện thiết lập cơ bản cho hệ sinh thái AAPS. Nightscout không bắt buộc để AAPS hoạt động nhưng rất hữu ích cho việc báo cáo hoặc theo dõi bệnh nhân khác. Nếu bạn chỉ dùng Nightscout cho riêng mình thì không cần phải kết nối với NS mọi lúc. Bạn có thể thiết lập để tải dữ liệu, ví dụ chỉ khi có Wi-Fi ở nhà, nhằm tiết kiệm pin.</string>
     <string name="objectives_openloop_objective">Bắt đầu với chế độ vòng hở (open loop)</string>
     <string name="objectives_openloop_gate">Chạy ở chế độ Vòng lặp mở (Open Loop) trong vài ngày và tự tay thực hiện nhiều liều nền tạm thời. Thiết lập và sử dụng các mục tiêu tạm thời và mục tiêu tạm thời mặc định (ví dụ cho hoạt động thể chất hoặc xử lý hạ đường huyết bằng carbs)</string>
-    <string name="objectives_openloop_learned">Chế độ Vòng hở (Open loop) có thể được sử dụng để đưa ra khuyến nghị nếu bạn không có bơm tương thích hoặc bạn chưa sẵn sàng chuyển sang chế độ vòng kín (closed loop).</string>
+    <string name="objectives_openloop_learned">Chế độ Vòng mở có thể được sử dụng để đưa ra khuyến nghị nếu bạn không có bơm tương thích hoặc bạn chưa sẵn sàng chuyển sang chế độ đóng vòng lặp.</string>
     <string name="objectives_maxbasal_objective">Hiểu về chế độ vòng hở (open loop), bao gồm các khuyến nghị liều nền tạm thời của nó</string>
     <string name="objectives_maxbasal_gate">Dựa trên kinh nghiệm đó, quyết định mức liều nền tối đa nên là bao nhiêu và thiết lập nó trên bơm cũng như trong phần Tùy chọn (preferences). Ở Chế độ đơn giản (simple mode), giá trị này được tính toán theo khuyến nghị trong wiki và không cần phải tự thiết lập.</string>
     <string name="objectives_maxbasal">Thực hiện theo khuyến nghị</string>
@@ -48,7 +48,7 @@
     <string name="objectives_usescale">Sử dụng chức năng thu phóng bằng cách nhấn giữ biểu đồ đường huyết</string>
     <string name="objectives_exam_objective">Kiểm chứng kiến thức của bạn</string>
     <string name="objectives_exam_gate">Nghiên cứu các câu hỏi. Bạn sẽ được đưa ra bốn câu trả lời có thể cho mỗi câu hỏi. Có thể có nhiều hơn một đáp án đúng. Vui lòng kiểm tra tất cả những đáp án đúng và chọn XÁC MINH (VERIFY).</string>
-    <string name="objectives_exam_learned_prerequisites">Bạn không cần phải là nhà phát triển, nhưng bạn cần Nightscout để hoàn thành các Mục tiêu (Objectives), một bơm tương thích và một máy tính để xây dựng AAPS lần đầu tiên cũng như cho mỗi lần cập nhật.</string>
+    <string name="objectives_exam_learned_prerequisites">Bạn không cần phải là nhà phát triển, nhưng bạn cần Nightscout để hoàn thành các Mục tiêu, một bơm tương thích và một máy tính để xây dựng AAPS lần đầu tiên cũng như cho mỗi lần cập nhật.</string>
     <string name="objectives_exam_learned_prerequisites2">AAPS có thể chạy ở chế độ ngoại tuyến (offline).</string>
     <string name="objectives_exam_learned_basaltest">Hồ sơ cần được xem xét và cập nhật. Hồ sơ càng tốt = kết quả càng tốt.</string>
     <string name="objectives_exam_learned_dia">DIA trong chế độ vòng kín (looping) có ý nghĩa khác (thời gian cho đến khi toàn bộ insulin được hấp thụ) so với trong liệu pháp bơm insulin cổ điển (thời gian cho đến khi phần lớn insulin được hấp thụ).</string>
