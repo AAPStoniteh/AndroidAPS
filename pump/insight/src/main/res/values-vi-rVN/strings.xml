@@ -7,12 +7,12 @@
     <string name="insight_status">Trạng thái</string>
     <string name="recovery_duration">Thời gian hồi phục</string>
     <string name="last_connected">Đã kết nối lúc</string>
-    <string name="start_pump">Khởi động Pump</string>
-    <string name="stop_pump">Dừng Pump</string>
+    <string name="start_pump">Khởi động Bơm</string>
+    <string name="stop_pump">Dừng Bơm</string>
     <string name="started">Đã bắt đầu</string>
     <string name="stopped">Đã dừng</string>
     <string name="operating_mode">Chế độ vận hành</string>
-    <string name="description_pump_insight_local">Tích hợp Pump cho các Pump Accu-Chek Insight</string>
+    <string name="description_pump_insight_local">Tích hợp Bơm cho các Bơm Accu-Chek Insight</string>
     <string name="not_inserted">Chưa được lắp</string>
     <string name="tdd_bolus">Tổng liều Bolus</string>
     <string name="tdd_basal">Tổng liều nền</string>
@@ -23,7 +23,7 @@
     <string name="searching_for_devices">Đang tìm kiếm thiết bị…</string>
     <string name="pairing_completed">Hoàn thành ghép đôi</string>
     <string name="code_compare">Mã hiển thị trên thiết bị này có khớp với mã trên bơm của bạn không?</string>
-    <string name="insight_pairing">Ghép nối Pump Insight</string>
+    <string name="insight_pairing">Ghép nối Bơm Insight</string>
     <string name="insight_local">Accu-Chek Insight</string>
     <string name="insight_alert_formatter">%1$s: %2$s</string>
     <string name="tube_changed">Ống dẫn insulin đã được thay</string>
@@ -34,8 +34,8 @@
     <string name="disable_vibration_auto">Tắt rung khi tiêm bolus tự động</string>
     <string name="disable_vibration_auto_summary">Dành cho SMB và liều nền tạm thời với mô phỏng TBR (chỉ khả dụng với firmware Insight 3.x)</string>
     <string name="timeout_during_handshake">Hết thời gian chờ trong quá trình trao đổi – đặt lại Bluetooth</string>
-    <string name="pump_stopped">Đã dừng Pump</string>
-    <string name="pump_started">Đã khởi động Pump</string>
+    <string name="pump_stopped">Đã dừng Bơm</string>
+    <string name="pump_started">Đã khởi động Bơm</string>
     <string name="release_software_version">Phiên bản phần mềm</string>
     <string name="ui_processor_software_version">Phiên bản phần mềm xử lý giao diện</string>
     <string name="pc_processor_software_version">Phiên bản phần mềm bộ xử lý PC</string>
@@ -57,7 +57,7 @@
     <string name="disconnect_delay">Thời gian trễ ngắt kết nối [giây]</string>
     <string name="max_recovery_duration">Thời gian hồi phục tối đa [giây]</string>
     <string name="min_recovery_duration">Thời gian hồi phục tối thiểu [giây]</string>
-    <string name="pump_alert">Cảnh báo pump</string>
+    <string name="pump_alert">Cảnh báo Bơm</string>
     <string name="pairing_information">Thông tin ghép nối</string>
     <string name="last_connection">%1$s (%2$s)</string>
 </resources>
