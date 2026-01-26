@@ -137,4 +137,5 @@
     <string name="bolus_error_reason_already_in_progress">Đang thực hiện liều Bolus</string>
     <string name="bolus_error_reason_unable_to_send_command">Không thể gửi lệnh bolus</string>
     <string name="bolus_error_reason_communication_lost">Hết thời gian chờ khi lấy trạng thái bolus</string>
+    <string name="bolus_error_reason_pump_error">Bơm lỗi</string>
 </resources>
