@@ -1,5 +1,7 @@
 package app.aaps.core.interfaces.overview.graph
 
+import app.aaps.core.data.model.TrendArrow
+
 /**
  * Domain models for calculated graph data.
  * These are view-agnostic - no GraphView or Vico dependencies.
@@ -51,8 +53,29 @@ data class BgDataPoint(
 )
 
 // ============================================================================
-// Secondary Graph Domain Models (Phase 5)
+// BG Info Display Data (Overview info section)
 // ============================================================================
+
+/**
+ * Current BG info for the overview info section display.
+ * Contains the latest BG value and related status for UI display.
+ * Color mapping (BgRange -> theme color) happens in UI layer.
+ */
+data class BgInfoData(
+    val bgValue: Double,           // Value in user's units (mg/dL or mmol/L)
+    val bgText: String,            // Formatted BG string (e.g., "120" or "6.7")
+    val bgRange: BgRange,          // HIGH/IN_RANGE/LOW - for color mapping in UI
+    val isOutdated: Boolean,       // True if timestamp > 9 min ago (for strikethrough)
+    val timestamp: Long,           // BG timestamp (for timeAgo calculation)
+    val trendArrow: TrendArrow?,   // Trend direction arrow
+    val trendDescription: String,  // Accessibility description of trend
+    val delta: Double?,            // Delta in user units (signed)
+    val deltaText: String?,        // Formatted delta string (e.g., "+5" or "-0.3")
+    val shortAvgDelta: Double?,    // Short average delta in user units
+    val shortAvgDeltaText: String?,// Formatted short avg delta
+    val longAvgDelta: Double?,     // Long average delta in user units
+    val longAvgDeltaText: String?, // Formatted long avg delta
+)
 
 /**
  * Generic data point for line graphs (IOB, COB, Activity, BGI, Ratio, etc.)

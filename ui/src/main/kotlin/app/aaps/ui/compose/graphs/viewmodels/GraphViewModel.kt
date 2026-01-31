@@ -5,12 +5,17 @@ import androidx.lifecycle.viewModelScope
 import app.aaps.core.interfaces.logging.AAPSLogger
 import app.aaps.core.interfaces.logging.LTag
 import app.aaps.core.interfaces.overview.graph.BgDataPoint
+import app.aaps.core.interfaces.overview.graph.BgInfoData
 import app.aaps.core.interfaces.overview.graph.CalculatedGraphDataCache
+import app.aaps.core.interfaces.resources.ResourceHelper
+import app.aaps.core.interfaces.utils.DateUtil
 import app.aaps.core.keys.UnitDoubleKey
 import app.aaps.core.keys.interfaces.Preferences
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -34,10 +39,20 @@ data class ChartConfig(
     val lowMark: Double
 )
 
+/**
+ * UI state for BG info section display
+ */
+data class BgInfoUiState(
+    val bgInfo: BgInfoData?,
+    val timeAgoText: String
+)
+
 class GraphViewModel @Inject constructor(
     cache: CalculatedGraphDataCache,
     private val aapsLogger: AAPSLogger,
-    preferences: Preferences
+    preferences: Preferences,
+    private val dateUtil: DateUtil,
+    private val rh: ResourceHelper
 ) : ViewModel() {
 
     // Static chart config - read once at initialization
@@ -53,6 +68,33 @@ class GraphViewModel @Inject constructor(
     // Secondary graph flows
     val iobGraphFlow = cache.iobGraphFlow
     val cobGraphFlow = cache.cobGraphFlow
+
+    // =========================================================================
+    // BG Info Section (Overview info display)
+    // =========================================================================
+
+    // Ticker flow for periodic timeAgo updates (every 30 seconds)
+    private val timeAgoTicker = flow {
+        while (true) {
+            emit(Unit)
+            delay(30_000L)
+        }
+    }
+
+    // BG info UI state - combines bgInfo with periodic timeAgo updates
+    val bgInfoState: StateFlow<BgInfoUiState> = combine(
+        cache.bgInfoFlow,
+        timeAgoTicker
+    ) { bgInfo, _ ->
+        BgInfoUiState(
+            bgInfo = bgInfo,
+            timeAgoText = dateUtil.minOrSecAgo(rh, bgInfo?.timestamp)
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = BgInfoUiState(bgInfo = null, timeAgoText = "")
+    )
 
     // Derived time range from actual data (recalculates as series arrive)
     val derivedTimeRange: StateFlow<Pair<Long, Long>?> = combine(

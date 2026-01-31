@@ -10,9 +10,11 @@ import app.aaps.core.graph.data.DataPointWithLabelInterface
 import app.aaps.core.graph.data.GlucoseValueDataPoint
 import app.aaps.core.graph.data.PointsWithLabelGraphSeries
 import app.aaps.core.interfaces.db.PersistenceLayer
+import app.aaps.core.interfaces.iob.GlucoseStatusProvider
 import app.aaps.core.interfaces.iob.IobCobCalculator
 import app.aaps.core.interfaces.overview.OverviewData
 import app.aaps.core.interfaces.overview.graph.BgDataPoint
+import app.aaps.core.interfaces.overview.graph.BgInfoData
 import app.aaps.core.interfaces.overview.graph.BgRange
 import app.aaps.core.interfaces.overview.graph.BgType
 import app.aaps.core.interfaces.overview.graph.CalculatedGraphDataCache
@@ -21,6 +23,7 @@ import app.aaps.core.interfaces.profile.ProfileUtil
 import app.aaps.core.interfaces.resources.ResourceHelper
 import app.aaps.core.interfaces.utils.DateUtil
 import app.aaps.core.interfaces.utils.Round
+import app.aaps.core.interfaces.utils.TrendCalculator
 import app.aaps.core.keys.UnitDoubleKey
 import app.aaps.core.keys.interfaces.Preferences
 import app.aaps.core.objects.workflow.LoggingWorker
@@ -41,6 +44,8 @@ class PrepareBgDataWorker(
     @Inject lateinit var persistenceLayer: PersistenceLayer
     @Inject lateinit var preferences: Preferences
     @Inject lateinit var dateUtil: DateUtil
+    @Inject lateinit var trendCalculator: TrendCalculator
+    @Inject lateinit var glucoseStatusProvider: GlucoseStatusProvider
 
     // MIGRATION: KEEP - New cache for Compose graphs
     @Inject lateinit var calculatedGraphDataCache: CalculatedGraphDataCache
@@ -129,6 +134,42 @@ class PrepareBgDataWorker(
 
         // Update BG readings series independently
         calculatedGraphDataCache.updateBgReadings(bgDataPoints)
+
+        // ========== BG Info for Overview info section ==========
+        // Use bucketed data (with smoothing) to match original behavior exactly
+        // Original: lastBgData.lastBg() -> iobCobCalculator.ads.bucketedData?.firstOrNull()
+        val lastBg = data.iobCobCalculator.ads.bucketedData?.firstOrNull()
+        val glucoseStatus = glucoseStatusProvider.glucoseStatusData
+
+        val bgInfoData = lastBg?.let { bg ->
+            // Calculate range from recalculated (smoothed) value - matches lastBgData.isLow()/isHigh()
+            val valueInUnits = profileUtil.fromMgdlToUnits(bg.recalculated)
+            val bgRange = when {
+                valueInUnits > highMarkInUnits -> BgRange.HIGH
+                valueInUnits < lowMarkInUnits -> BgRange.LOW
+                else -> BgRange.IN_RANGE
+            }
+            val isOutdated = bg.timestamp < dateUtil.now() - T.mins(9).msecs()
+            val trendArrow = trendCalculator.getTrendArrow(data.iobCobCalculator.ads)
+            val trendDescription = trendCalculator.getTrendDescription(data.iobCobCalculator.ads)
+
+            BgInfoData(
+                bgValue = valueInUnits,
+                bgText = profileUtil.fromMgdlToStringInUnits(bg.recalculated),
+                bgRange = bgRange,
+                isOutdated = isOutdated,
+                timestamp = bg.timestamp,
+                trendArrow = trendArrow,
+                trendDescription = trendDescription,
+                delta = glucoseStatus?.let { profileUtil.fromMgdlToUnits(it.delta) },
+                deltaText = glucoseStatus?.let { profileUtil.fromMgdlToSignedStringInUnits(it.delta) },
+                shortAvgDelta = glucoseStatus?.let { profileUtil.fromMgdlToUnits(it.shortAvgDelta) },
+                shortAvgDeltaText = glucoseStatus?.let { profileUtil.fromMgdlToSignedStringInUnits(it.shortAvgDelta) },
+                longAvgDelta = glucoseStatus?.let { profileUtil.fromMgdlToUnits(it.longAvgDelta) },
+                longAvgDeltaText = glucoseStatus?.let { profileUtil.fromMgdlToSignedStringInUnits(it.longAvgDelta) }
+            )
+        }
+        calculatedGraphDataCache.updateBgInfo(bgInfoData)
         // ========== MIGRATION: KEEP - End Compose/Vico code ==========
 
         return Result.success()

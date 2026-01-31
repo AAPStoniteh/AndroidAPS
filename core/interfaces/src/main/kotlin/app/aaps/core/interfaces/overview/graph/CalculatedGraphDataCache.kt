@@ -28,9 +28,13 @@ interface CalculatedGraphDataCache {
     val bgReadingsFlow: StateFlow<List<BgDataPoint>>
     val bucketedDataFlow: StateFlow<List<BgDataPoint>>
 
+    // BG info for overview info section display
+    val bgInfoFlow: StateFlow<BgInfoData?>
+
     // Update methods for workers - each triggers only its flow
     fun updateBgReadings(data: List<BgDataPoint>)
     fun updateBucketedData(data: List<BgDataPoint>)
+    fun updateBgInfo(data: BgInfoData?)
 
     // =========================================================================
     // Secondary graph flows (Phase 5) - one per graph

@@ -3,6 +3,7 @@ package app.aaps.ui.compose.graphs
 import app.aaps.core.interfaces.overview.graph.AbsIobGraphData
 import app.aaps.core.interfaces.overview.graph.ActivityGraphData
 import app.aaps.core.interfaces.overview.graph.BgDataPoint
+import app.aaps.core.interfaces.overview.graph.BgInfoData
 import app.aaps.core.interfaces.overview.graph.BgiGraphData
 import app.aaps.core.interfaces.overview.graph.CalculatedGraphDataCache
 import app.aaps.core.interfaces.overview.graph.CobGraphData
@@ -43,14 +44,11 @@ class CalculatedGraphDataCacheImpl @Inject constructor() : CalculatedGraphDataCa
     // Independent series flows - each can update without affecting others
     private val _bgReadingsFlow = MutableStateFlow<List<BgDataPoint>>(emptyList())
     private val _bucketedDataFlow = MutableStateFlow<List<BgDataPoint>>(emptyList())
+    private val _bgInfoFlow = MutableStateFlow<BgInfoData?>(null)
 
     override val bgReadingsFlow: StateFlow<List<BgDataPoint>> = _bgReadingsFlow.asStateFlow()
     override val bucketedDataFlow: StateFlow<List<BgDataPoint>> = _bucketedDataFlow.asStateFlow()
-
-    // =========================================================================
-    // Secondary graph flows (Phase 5) - one per graph
-    // Non-nullable with empty data default (consistent with BG flows)
-    // =========================================================================
+    override val bgInfoFlow: StateFlow<BgInfoData?> = _bgInfoFlow.asStateFlow()
 
     private val _iobGraphFlow = MutableStateFlow(IobGraphData(emptyList(), emptyList()))
     private val _absIobGraphFlow = MutableStateFlow(AbsIobGraphData(emptyList()))
@@ -83,6 +81,10 @@ class CalculatedGraphDataCacheImpl @Inject constructor() : CalculatedGraphDataCa
 
     override fun updateBucketedData(data: List<BgDataPoint>) {
         _bucketedDataFlow.value = data
+    }
+
+    override fun updateBgInfo(data: BgInfoData?) {
+        _bgInfoFlow.value = data
     }
 
     override fun updateIobGraph(data: IobGraphData) {
@@ -125,6 +127,7 @@ class CalculatedGraphDataCacheImpl @Inject constructor() : CalculatedGraphDataCa
         _timeRangeFlow.value = null
         _bgReadingsFlow.value = emptyList()
         _bucketedDataFlow.value = emptyList()
+        _bgInfoFlow.value = null
         // Secondary graph flows - reset to empty data
         _iobGraphFlow.value = IobGraphData(emptyList(), emptyList())
         _absIobGraphFlow.value = AbsIobGraphData(emptyList())
