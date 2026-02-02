@@ -52,9 +52,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import app.aaps.core.data.model.EPS
-import app.aaps.core.data.time.T
-import app.aaps.core.interfaces.profile.LocalProfileManager
+
 import app.aaps.core.ui.compose.AapsFab
 import app.aaps.core.ui.compose.AapsTheme
 import app.aaps.core.ui.compose.AapsTopAppBar
@@ -64,6 +62,7 @@ import app.aaps.ui.R
 import app.aaps.ui.compose.components.ContentContainer
 import app.aaps.ui.compose.components.PageIndicatorDots
 import app.aaps.ui.compose.profileManagement.viewmodels.ProfileManagementViewModel
+import java.text.DecimalFormat
 import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 
@@ -94,7 +93,7 @@ fun ProfileManagementScreen(
 
     // Delete confirmation dialog
     if (showDeleteDialog && profileToDelete != null) {
-        val profileName = uiState.profiles.getOrNull(profileToDelete!!)?.name ?: ""
+        val profileName = uiState.profileNames.getOrNull(profileToDelete!!) ?: ""
         OkCancelDialog(
             title = viewModel.rh.gs(app.aaps.core.ui.R.string.removerecord),
             message = viewModel.rh.gs(R.string.confirm_remove_profile, profileName),
@@ -112,7 +111,7 @@ fun ProfileManagementScreen(
 
     // Clone confirmation dialog
     if (showCloneDialog && profileToClone != null) {
-        val profileName = uiState.profiles.getOrNull(profileToClone!!)?.name ?: ""
+        val profileName = uiState.profileNames.getOrNull(profileToClone!!) ?: ""
         OkCancelDialog(
             title = viewModel.rh.gs(R.string.clone_label),
             message = viewModel.rh.gs(R.string.confirm_clone_profile, profileName),
@@ -154,12 +153,12 @@ fun ProfileManagementScreen(
             ) {
                 ContentContainer(
                     isLoading = uiState.isLoading,
-                    isEmpty = uiState.profiles.isEmpty()
+                    isEmpty = uiState.profileNames.isEmpty()
                 ) {
                     // Calculate initial page based on active profile - store stable value once computed
                     var stableInitialPage by remember { mutableIntStateOf(-1) }
-                    if (stableInitialPage == -1 && uiState.activeProfileName != null && uiState.profiles.isNotEmpty()) {
-                        val index = uiState.profiles.indexOfFirst { it.name == uiState.activeProfileName }
+                    if (stableInitialPage == -1 && uiState.activeProfileName != null && uiState.profileNames.isNotEmpty()) {
+                        val index = uiState.profileNames.indexOfFirst { it == uiState.activeProfileName }
                         stableInitialPage = if (index >= 0) index else 0
                     }
                     val initialPage = if (stableInitialPage >= 0) stableInitialPage else 0
@@ -168,7 +167,7 @@ fun ProfileManagementScreen(
                     key(stableInitialPage) {
                         val pagerState = rememberPagerState(
                             initialPage = initialPage,
-                            pageCount = { uiState.profiles.size }
+                            pageCount = { uiState.profileNames.size }
                         )
 
                         // Sync pager with selected profile (for programmatic selection)
@@ -198,13 +197,13 @@ fun ProfileManagementScreen(
                                 contentPadding = PaddingValues(horizontal = 64.dp),
                                 pageSpacing = 16.dp
                             ) { page ->
-                                val profile = uiState.profiles.getOrNull(page)
+                                val name = uiState.profileNames.getOrNull(page) ?: ""
                                 val basalSum = uiState.basalSums.getOrNull(page) ?: 0.0
-                                val isActive = profile?.name == uiState.activeProfileName
+                                val isActive = name == uiState.activeProfileName
                                 val hasErrors = uiState.profileErrors.getOrNull(page)?.isNotEmpty() == true
 
                                 ProfileCarouselCard(
-                                    profile = profile,
+                                    profileName = name,
                                     basalSum = basalSum,
                                     isActive = isActive,
                                     hasErrors = hasErrors,
@@ -237,7 +236,7 @@ fun ProfileManagementScreen(
 
                             // Page indicator dots
                             PageIndicatorDots(
-                                pageCount = uiState.profiles.size,
+                                pageCount = uiState.profileNames.size,
                                 currentPage = pagerState.currentPage
                             )
 
@@ -249,15 +248,36 @@ fun ProfileManagementScreen(
                                         .weight(1f)
                                         .verticalScroll(rememberScrollState())
                                 ) {
-                                    ProfileSingleContent(
-                                        profile = profile,
-                                        getIcList = viewModel::getIcList,
-                                        getIsfList = viewModel::getIsfList,
-                                        getBasalList = viewModel::getBasalList,
-                                        getTargetList = viewModel::getTargetList,
-                                        formatDia = viewModel::formatDia,
-                                        formatBasalSum = viewModel::formatBasalSum
-                                    )
+                                    val compareData = uiState.compareData
+                                    if (compareData != null) {
+                                        ProfileCompareContent(
+                                            profile1 = compareData.baseProfile,
+                                            profile2 = compareData.effectiveProfile,
+                                            unitsText = compareData.unitsText,
+                                            formatDia = { DecimalFormat("0.00").format(it) },
+                                            shortHourUnit = compareData.shortHourUnit,
+                                            icsRows = compareData.icRows,
+                                            icUnits = compareData.icUnits,
+                                            isfsRows = compareData.isfRows,
+                                            isfUnits = compareData.isfUnits,
+                                            basalsRows = compareData.basalRows,
+                                            basalUnits = compareData.basalUnits,
+                                            targetsRows = compareData.targetRows,
+                                            targetUnits = compareData.targetUnits,
+                                            profileName1 = compareData.baseName,
+                                            profileName2 = compareData.effectiveName
+                                        )
+                                    } else {
+                                        ProfileSingleContent(
+                                            profile = profile,
+                                            getIcList = viewModel::getIcList,
+                                            getIsfList = viewModel::getIsfList,
+                                            getBasalList = viewModel::getBasalList,
+                                            getTargetList = viewModel::getTargetList,
+                                            formatDia = viewModel::formatDia,
+                                            formatBasalSum = viewModel::formatBasalSum
+                                        )
+                                    }
                                     // Extra space for floating toolbar
                                     Spacer(modifier = Modifier.height(80.dp))
                                 }
@@ -311,12 +331,12 @@ fun ProfileManagementScreen(
                                     profileToDelete = currentPage
                                     showDeleteDialog = true
                                 },
-                                enabled = uiState.profiles.size > 1
+                                enabled = uiState.profileNames.size > 1
                             ) {
                                 Icon(
                                     imageVector = Icons.Filled.Delete,
                                     contentDescription = stringResource(R.string.remove_label),
-                                    tint = if (uiState.profiles.size > 1)
+                                    tint = if (uiState.profileNames.size > 1)
                                         MaterialTheme.colorScheme.error
                                     else
                                         MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)

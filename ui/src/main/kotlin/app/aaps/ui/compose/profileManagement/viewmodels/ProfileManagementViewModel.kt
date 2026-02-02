@@ -16,6 +16,7 @@ import app.aaps.core.interfaces.logging.AAPSLogger
 import app.aaps.core.interfaces.logging.LTag
 import app.aaps.core.interfaces.plugin.ActivePlugin
 import app.aaps.core.interfaces.profile.LocalProfileManager
+import app.aaps.core.interfaces.profile.Profile
 import app.aaps.core.interfaces.profile.ProfileErrorType
 import app.aaps.core.interfaces.profile.ProfileFunction
 import app.aaps.core.interfaces.profile.ProfileUtil
@@ -35,6 +36,8 @@ import app.aaps.core.keys.interfaces.Preferences
 import app.aaps.core.objects.extensions.pureProfileFromJson
 import app.aaps.core.objects.profile.ProfileSealed
 import app.aaps.core.ui.R
+import app.aaps.ui.compose.profileManagement.ProfileCompareData
+import app.aaps.ui.compose.profileManagement.buildProfileCompareData
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -122,10 +125,21 @@ class ProfileManagementViewModel @Inject constructor(
                     } else null
                 }
 
+                // Build profile names list
+                val profileNames = profiles.map { it.name }
+
                 // Calculate basal sum for each profile
-                val basalSums = profiles.map { singleProfile ->
+                val basalSums = profiles.mapIndexed { index, singleProfile ->
                     toPureProfile(singleProfile)?.let { pureProfile ->
-                        ProfileSealed.Pure(pureProfile, activePlugin).baseBasalSum()
+                        val sealed = ProfileSealed.Pure(pureProfile, activePlugin)
+                        val isActive = singleProfile.name == activeProfileName
+                        if (isActive && activeEps != null) {
+                            sealed.pct = activeEps.originalPercentage
+                            sealed.ts = (activeEps.originalTimeshift / 3600000).toInt()
+                            sealed.percentageBasalSum()
+                        } else {
+                            sealed.baseBasalSum()
+                        }
                     } ?: 0.0
                 }
 
@@ -139,16 +153,55 @@ class ProfileManagementViewModel @Inject constructor(
                     errors
                 }
 
-                // Get selected profile as ProfileSealed for viewer
+                // Get selected profile as Profile for viewer
+                var compareData: ProfileCompareData? = null
                 val selectedProfile = if (currentIndex in profiles.indices) {
-                    toPureProfile(profiles[currentIndex])?.let { pureProfile ->
-                        ProfileSealed.Pure(pureProfile, activePlugin)
+                    val isActive = profiles[currentIndex].name == activeProfileName
+                    if (isActive && activeEps != null) {
+                        val pct = activeEps.originalPercentage
+                        val tsMs = activeEps.originalTimeshift
+                        // Build comparison data when active profile has modifications
+                        if (pct != 100 || tsMs != 0L) {
+                            // Base: current local profile (SingleProfile) without modifications
+                            val baseProfile = toPureProfile(profiles[currentIndex])?.let { ProfileSealed.Pure(it, activePlugin) }
+                            // Effective: actual running profile from EPS
+                            val effectiveProfile = ProfileSealed.EPS(activeEps, activePlugin)
+                            if (baseProfile != null) {
+                                val profileName = profiles[currentIndex].name
+                                val tsHours = (tsMs / 3600000).toInt()
+                                val effectiveLabel = buildString {
+                                    append(profileName)
+                                    append(" (")
+                                    append("$pct%")
+                                    if (tsHours != 0) append(", ${if (tsHours > 0) "+" else ""}${tsHours}h")
+                                    append(")")
+                                }
+                                compareData = buildProfileCompareData(
+                                    profile1 = baseProfile,
+                                    profile2 = effectiveProfile,
+                                    profileName1 = profileName,
+                                    profileName2 = effectiveLabel,
+                                    rh = rh,
+                                    dateUtil = dateUtil,
+                                    profileUtil = profileUtil,
+                                    profileFunction = profileFunction
+                                )
+                            }
+                            // selectedProfile = effective (EPS) when in compare mode
+                            effectiveProfile
+                        } else {
+                            // Active but no modifications — show current local profile
+                            toPureProfile(profiles[currentIndex])?.let { ProfileSealed.Pure(it, activePlugin) }
+                        }
+                    } else {
+                        // Not active — show current local profile
+                        toPureProfile(profiles[currentIndex])?.let { ProfileSealed.Pure(it, activePlugin) }
                     }
                 } else null
 
                 _uiState.update {
                     it.copy(
-                        profiles = profiles,
+                        profileNames = profileNames,
                         currentProfileIndex = currentIndex,
                         activeProfileName = activeProfileName,
                         activeProfileSwitch = activeEps,
@@ -157,6 +210,7 @@ class ProfileManagementViewModel @Inject constructor(
                         basalSums = basalSums,
                         profileErrors = profileErrors,
                         selectedProfile = selectedProfile,
+                        compareData = compareData,
                         isLoading = false
                     )
                 }
@@ -270,10 +324,10 @@ class ProfileManagementViewModel @Inject constructor(
     }
 
     // Profile viewer formatting helpers
-    fun getIcList(profile: ProfileSealed): String = profile.getIcList(rh, dateUtil)
-    fun getIsfList(profile: ProfileSealed): String = profile.getIsfList(rh, dateUtil)
-    fun getBasalList(profile: ProfileSealed): String = profile.getBasalList(rh, dateUtil)
-    fun getTargetList(profile: ProfileSealed): String = profile.getTargetList(rh, dateUtil)
+    fun getIcList(profile: Profile): String = profile.getIcList(rh, dateUtil)
+    fun getIsfList(profile: Profile): String = profile.getIsfList(rh, dateUtil)
+    fun getBasalList(profile: Profile): String = profile.getBasalList(rh, dateUtil)
+    fun getTargetList(profile: Profile): String = profile.getTargetList(rh, dateUtil)
     fun formatDia(dia: Double): String = rh.gs(R.string.format_hours, dia)
     fun formatBasalSum(basalSum: Double): String = decimalFormatter.to2Decimal(basalSum) + " " + rh.gs(R.string.insulin_unit_shortname)
 
@@ -315,13 +369,13 @@ class ProfileManagementViewModel @Inject constructor(
         timestamp: Long = dateUtil.now(),
         timeChanged: Boolean = false
     ): Boolean {
-        val profiles = uiState.value.profiles
-        if (profileIndex !in profiles.indices) {
+        val profileNames = uiState.value.profileNames
+        if (profileIndex !in profileNames.indices) {
             aapsLogger.error(LTag.UI, "Invalid profile index: $profileIndex")
             return false
         }
 
-        val profileName = profiles[profileIndex].name
+        val profileName = profileNames[profileIndex]
         val profileStore = localProfileManager.profile ?: run {
             aapsLogger.error(LTag.UI, "No profile store available")
             return false
@@ -411,7 +465,7 @@ class ProfileManagementViewModel @Inject constructor(
  * UI state for ProfileManagementScreen
  */
 data class ProfileManagementUiState(
-    val profiles: List<LocalProfileManager.SingleProfile> = emptyList(),
+    val profileNames: List<String> = emptyList(),
     val currentProfileIndex: Int = 0,
     val activeProfileName: String? = null,
     val activeProfileSwitch: EPS? = null,
@@ -419,6 +473,7 @@ data class ProfileManagementUiState(
     val remainingTimeMs: Long? = null,
     val basalSums: List<Double> = emptyList(),
     val profileErrors: List<List<ProfileValidationError>> = emptyList(),
-    val selectedProfile: ProfileSealed? = null,
+    val selectedProfile: Profile? = null,
+    val compareData: ProfileCompareData? = null,
     val isLoading: Boolean = true
 )

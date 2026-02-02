@@ -44,8 +44,11 @@ import app.aaps.core.ui.compose.AapsTopAppBar
 import app.aaps.core.ui.compose.LocalPreferences
 import app.aaps.core.ui.compose.LocalRxBus
 import app.aaps.ui.compose.profileManagement.ProfileCompareContent
-import app.aaps.ui.compose.profileManagement.ProfileCompareRow
 import app.aaps.ui.compose.profileManagement.ProfileSingleContent
+import app.aaps.ui.compose.profileManagement.buildBasalRows
+import app.aaps.ui.compose.profileManagement.buildIcRows
+import app.aaps.ui.compose.profileManagement.buildIsfRows
+import app.aaps.ui.compose.profileManagement.buildTargetRows
 import app.aaps.ui.compose.profileManagement.ProfileViewerData
 import app.aaps.ui.compose.profileManagement.ProfileViewerScreen
 import dagger.android.support.DaggerAppCompatActivity
@@ -193,16 +196,16 @@ class ProfileViewerActivity : DaggerAppCompatActivity() {
                         unitsText = profileFunction.getUnits().asText,
                         formatDia = { DecimalFormat("0.00").format(it) },
                         shortHourUnit = rh.gs(app.aaps.core.interfaces.R.string.shorthour),
-                        icsRows = ics(profile1, profile2),
+                        icsRows = buildIcRows(profile1, profile2, dateUtil),
                         icUnits = rh.gs(R.string.profile_carbs_per_unit),
-                        isfsRows = isfs(profile1, profile2),
+                        isfsRows = buildIsfRows(profile1, profile2, profileUtil, dateUtil),
                         isfUnits = "${profileFunction.getUnits().asText} ${rh.gs(R.string.profile_per_unit)}",
-                        basalsRows = basals(profile1, profile2),
+                        basalsRows = buildBasalRows(profile1, profile2, dateUtil),
                         basalUnits = rh.gs(R.string.profile_ins_units_per_hour),
-                        targetsRows = targets(profile1, profile2),
+                        targetsRows = buildTargetRows(profile1, profile2, dateUtil, profileUtil),
                         targetUnits = profileFunction.getUnits().asText,
-                        profileName1 = profile1.profileName,
-                        profileName2 = profile2.profileName
+                        profileName1 = viewerData.profileName ?: "",
+                        profileName2 = viewerData.profileName2 ?: ""
                     )
                 },
                 profileRow = { label, value ->
@@ -326,145 +329,5 @@ class ProfileViewerActivity : DaggerAppCompatActivity() {
                 )
             }
         }
-    }
-
-    /**
-     * Builds comparison rows for basal rates between two profiles.
-     * Creates a row whenever basal rate changes for either profile throughout the day.
-     * Includes a summary row with total daily basal (∑).
-     *
-     * @param profile1 First profile
-     * @param profile2 Second profile
-     * @return List of ProfileCompareRow with time (HH:MM or ∑) and basal values from both profiles
-     */
-    private fun basals(profile1: Profile, profile2: Profile): List<ProfileCompareRow> {
-        var prev1 = -1.0
-        var prev2 = -1.0
-        val rows = mutableListOf<ProfileCompareRow>()
-        for (hour in 0..23) {
-            val val1 = profile1.getBasalTimeFromMidnight(hour * 60 * 60)
-            val val2 = profile2.getBasalTimeFromMidnight(hour * 60 * 60)
-            if (val1 != prev1 || val2 != prev2) {
-                rows.add(
-                    ProfileCompareRow(
-                        time = dateUtil.formatHHMM(hour * 60 * 60),
-                        value1 = val1.toString(),
-                        value2 = val2.toString()
-                    )
-                )
-            }
-            prev1 = val1
-            prev2 = val2
-        }
-        // Add summary row
-        rows.add(
-            ProfileCompareRow(
-                time = "∑",
-                value1 = profile1.baseBasalSum().toString(),
-                value2 = profile2.baseBasalSum().toString()
-            )
-        )
-        return rows
-    }
-
-    /**
-     * Builds comparison rows for insulin-to-carb ratios between two profiles.
-     * Creates a row whenever IC ratio changes for either profile throughout the day.
-     * Values are formatted to 1 decimal place.
-     *
-     * @param profile1 First profile
-     * @param profile2 Second profile
-     * @return List of ProfileCompareRow with time (HH:MM) and IC ratio values from both profiles
-     */
-    private fun ics(profile1: Profile, profile2: Profile): List<ProfileCompareRow> {
-        var prev1 = -1.0
-        var prev2 = -1.0
-        val rows = mutableListOf<ProfileCompareRow>()
-        val formatter = DecimalFormat("0.0")
-        for (hour in 0..23) {
-            val val1 = profile1.getIcTimeFromMidnight(hour * 60 * 60)
-            val val2 = profile2.getIcTimeFromMidnight(hour * 60 * 60)
-            if (val1 != prev1 || val2 != prev2) {
-                rows.add(
-                    ProfileCompareRow(
-                        time = dateUtil.formatHHMM(hour * 60 * 60),
-                        value1 = formatter.format(val1),
-                        value2 = formatter.format(val2)
-                    )
-                )
-            }
-            prev1 = val1
-            prev2 = val2
-        }
-        return rows
-    }
-
-    /**
-     * Builds comparison rows for insulin sensitivity factors between two profiles.
-     * Creates a row whenever ISF changes for either profile throughout the day.
-     * Values are converted from mg/dL to user's preferred units and formatted to 1 decimal place.
-     *
-     * @param profile1 First profile
-     * @param profile2 Second profile
-     * @return List of ProfileCompareRow with time (HH:MM) and ISF values in user units from both profiles
-     */
-    private fun isfs(profile1: Profile, profile2: Profile): List<ProfileCompareRow> {
-        var prev1 = -1.0
-        var prev2 = -1.0
-        val rows = mutableListOf<ProfileCompareRow>()
-        val formatter = DecimalFormat("0.0")
-        for (hour in 0..23) {
-            val val1 = profileUtil.fromMgdlToUnits(profile1.getIsfMgdlTimeFromMidnight(hour * 60 * 60))
-            val val2 = profileUtil.fromMgdlToUnits(profile2.getIsfMgdlTimeFromMidnight(hour * 60 * 60))
-            if (val1 != prev1 || val2 != prev2) {
-                rows.add(
-                    ProfileCompareRow(
-                        time = dateUtil.formatHHMM(hour * 60 * 60),
-                        value1 = formatter.format(val1),
-                        value2 = formatter.format(val2)
-                    )
-                )
-            }
-            prev1 = val1
-            prev2 = val2
-        }
-        return rows
-    }
-
-    /**
-     * Builds comparison rows for blood glucose targets between two profiles.
-     * Creates a row whenever target range (low or high) changes for either profile throughout the day.
-     * Values are converted from mg/dL to user's preferred units and formatted as "low - high" ranges.
-     *
-     * @param profile1 First profile
-     * @param profile2 Second profile
-     * @return List of ProfileCompareRow with time (HH:MM) and target ranges in user units from both profiles
-     */
-    private fun targets(profile1: Profile, profile2: Profile): List<ProfileCompareRow> {
-        var prev1l = -1.0
-        var prev1h = -1.0
-        var prev2l = -1.0
-        var prev2h = -1.0
-        val rows = mutableListOf<ProfileCompareRow>()
-        for (hour in 0..23) {
-            val val1l = profile1.getTargetLowMgdlTimeFromMidnight(hour * 60 * 60)
-            val val1h = profile1.getTargetHighMgdlTimeFromMidnight(hour * 60 * 60)
-            val val2l = profile2.getTargetLowMgdlTimeFromMidnight(hour * 60 * 60)
-            val val2h = profile2.getTargetHighMgdlTimeFromMidnight(hour * 60 * 60)
-            if (val1l != prev1l || val1h != prev1h || val2l != prev2l || val2h != prev2h) {
-                rows.add(
-                    ProfileCompareRow(
-                        time = dateUtil.formatHHMM(hour * 60 * 60),
-                        value1 = "${profileUtil.fromMgdlToStringInUnits(val1l)} - ${profileUtil.fromMgdlToStringInUnits(val1h)}",
-                        value2 = "${profileUtil.fromMgdlToStringInUnits(val2l)} - ${profileUtil.fromMgdlToStringInUnits(val2h)}"
-                    )
-                )
-            }
-            prev1l = val1l
-            prev1h = val1h
-            prev2l = val2l
-            prev2h = val2h
-        }
-        return rows
     }
 }

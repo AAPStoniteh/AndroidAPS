@@ -30,7 +30,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.aaps.core.data.model.EPS
 import app.aaps.core.data.time.T
-import app.aaps.core.interfaces.profile.LocalProfileManager
 import app.aaps.core.ui.compose.AapsTheme
 import app.aaps.core.ui.compose.icons.ProfileSwitch
 import app.aaps.ui.R
@@ -41,7 +40,7 @@ import kotlinx.coroutines.delay
  */
 @Composable
 internal fun ProfileCarouselCard(
-    profile: LocalProfileManager.SingleProfile?,
+    profileName: String,
     basalSum: Double,
     isActive: Boolean,
     hasErrors: Boolean,
@@ -117,7 +116,7 @@ internal fun ProfileCarouselCard(
             ) {
                 // Profile name
                 Text(
-                    text = profile?.name ?: "",
+                    text = profileName,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = contentColor,

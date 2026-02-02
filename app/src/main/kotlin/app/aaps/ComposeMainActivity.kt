@@ -290,11 +290,11 @@ class ComposeMainActivity : DaggerAppCompatActivityWithResult() {
                         )
                     ) { backStackEntry ->
                         val profileIndex = backStackEntry.arguments?.getInt("profileIndex") ?: 0
-                        val profile = profileManagementViewModel.uiState.value.profiles.getOrNull(profileIndex)
+                        val profileName = profileManagementViewModel.uiState.value.profileNames.getOrNull(profileIndex) ?: ""
                         val reuseValues = profileManagementViewModel.getReuseValues()
 
                         ProfileActivationScreen(
-                            profileName = profile?.name ?: "",
+                            profileName = profileName,
                             currentPercentage = reuseValues?.first ?: 100,
                             currentTimeshiftHours = reuseValues?.second ?: 0,
                             hasReuseValues = reuseValues != null,

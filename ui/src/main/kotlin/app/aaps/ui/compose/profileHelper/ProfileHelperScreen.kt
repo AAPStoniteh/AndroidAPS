@@ -53,17 +53,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import app.aaps.core.data.model.GlucoseUnit
-import app.aaps.core.interfaces.profile.Profile
-import app.aaps.core.interfaces.profile.ProfileUtil
-import app.aaps.core.interfaces.utils.DateUtil
 import app.aaps.core.objects.profile.ProfileSealed
 import app.aaps.core.ui.compose.AapsTopAppBar
 import app.aaps.core.ui.compose.NumberInputRow
 import app.aaps.core.ui.compose.clearFocusOnTap
 import app.aaps.ui.R
 import app.aaps.ui.compose.profileManagement.ProfileCompareContent
-import app.aaps.ui.compose.profileManagement.ProfileCompareRow
+import app.aaps.ui.compose.profileManagement.buildBasalRows
+import app.aaps.ui.compose.profileManagement.buildIcRows
+import app.aaps.ui.compose.profileManagement.buildIsfRows
+import app.aaps.ui.compose.profileManagement.buildTargetRows
 import app.aaps.ui.compose.profileManagement.viewmodels.ProfileHelperViewModel
 import app.aaps.ui.compose.stats.TddStatsCompose
 import java.text.DecimalFormat
@@ -549,73 +548,4 @@ fun ProfileSwitchContent(profileSwitches: List<String>, selectedIndex: Int, onPr
             }
         }
     }
-}
-
-private fun buildBasalRows(profile1: Profile, profile2: Profile, dateUtil: DateUtil): List<ProfileCompareRow> {
-    var prev1 = -1.0
-    var prev2 = -1.0
-    val rows = mutableListOf<ProfileCompareRow>()
-    val formatter = DecimalFormat("0.00")
-    for (hour in 0..23) {
-        val val1 = profile1.getBasalTimeFromMidnight(hour * 60 * 60)
-        val val2 = profile2.getBasalTimeFromMidnight(hour * 60 * 60)
-        if (val1 != prev1 || val2 != prev2) rows.add(ProfileCompareRow(time = dateUtil.formatHHMM(hour * 60 * 60), value1 = formatter.format(val1), value2 = formatter.format(val2)))
-        prev1 = val1; prev2 = val2
-    }
-    rows.add(ProfileCompareRow(time = "∑", value1 = formatter.format(profile1.baseBasalSum()), value2 = formatter.format(profile2.baseBasalSum())))
-    return rows
-}
-
-private fun buildIcRows(profile1: Profile, profile2: Profile, dateUtil: DateUtil): List<ProfileCompareRow> {
-    var prev1 = -1.0
-    var prev2 = -1.0
-    val rows = mutableListOf<ProfileCompareRow>()
-    val formatter = DecimalFormat("0.0")
-    for (hour in 0..23) {
-        val val1 = profile1.getIcTimeFromMidnight(hour * 60 * 60)
-        val val2 = profile2.getIcTimeFromMidnight(hour * 60 * 60)
-        if (val1 != prev1 || val2 != prev2) rows.add(ProfileCompareRow(time = dateUtil.formatHHMM(hour * 60 * 60), value1 = formatter.format(val1), value2 = formatter.format(val2)))
-        prev1 = val1; prev2 = val2
-    }
-    return rows
-}
-
-private fun buildIsfRows(profile1: Profile, profile2: Profile, profileUtil: ProfileUtil, dateUtil: DateUtil): List<ProfileCompareRow> {
-    var prev1 = -1.0
-    var prev2 = -1.0
-    val rows = mutableListOf<ProfileCompareRow>()
-    val formatter = DecimalFormat("0.0")
-    val units = profile1.units
-    for (hour in 0..23) {
-        val val1 = profileUtil.fromMgdlToUnits(profile1.getIsfMgdlTimeFromMidnight(hour * 60 * 60), units)
-        val val2 = profileUtil.fromMgdlToUnits(profile2.getIsfMgdlTimeFromMidnight(hour * 60 * 60), units)
-        if (val1 != prev1 || val2 != prev2) rows.add(ProfileCompareRow(time = dateUtil.formatHHMM(hour * 60 * 60), value1 = formatter.format(val1), value2 = formatter.format(val2)))
-        prev1 = val1; prev2 = val2
-    }
-    return rows
-}
-
-private fun buildTargetRows(profile1: Profile, profile2: Profile, dateUtil: DateUtil, profileUtil: ProfileUtil): List<ProfileCompareRow> {
-    var prev1l = -1.0
-    var prev1h = -1.0
-    var prev2l = -1.0
-    var prev2h = -1.0
-    val rows = mutableListOf<ProfileCompareRow>()
-    val units = profile1.units
-    val formatter = if (units == GlucoseUnit.MMOL) DecimalFormat("0.0") else DecimalFormat("0")
-    for (hour in 0..23) {
-        val val1l = profileUtil.fromMgdlToUnits(profile1.getTargetLowMgdlTimeFromMidnight(hour * 60 * 60), units)
-        val val1h = profileUtil.fromMgdlToUnits(profile1.getTargetHighMgdlTimeFromMidnight(hour * 60 * 60), units)
-        val val2l = profileUtil.fromMgdlToUnits(profile2.getTargetLowMgdlTimeFromMidnight(hour * 60 * 60), units)
-        val val2h = profileUtil.fromMgdlToUnits(profile2.getTargetHighMgdlTimeFromMidnight(hour * 60 * 60), units)
-        if (val1l != prev1l || val1h != prev1h || val2l != prev2l || val2h != prev2h) rows.add(
-            ProfileCompareRow(
-                time = dateUtil.formatHHMM(hour * 60 * 60),
-                value1 = "${formatter.format(val1l)} - ${formatter.format(val1h)}",
-                value2 = "${formatter.format(val2l)} - ${formatter.format(val2h)}"
-            )
-        )
-        prev1l = val1l; prev1h = val1h; prev2l = val2l; prev2h = val2h
-    }
-    return rows
 }

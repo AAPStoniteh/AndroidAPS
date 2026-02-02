@@ -30,7 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import app.aaps.core.objects.profile.ProfileSealed
+import app.aaps.core.interfaces.profile.Profile
 import app.aaps.core.ui.R
 import app.aaps.core.ui.compose.AapsTheme
 
@@ -48,8 +48,8 @@ import app.aaps.core.ui.compose.AapsTheme
  * @param validationError Error message to display if profile validation fails
  */
 data class ProfileViewerData(
-    val profile: ProfileSealed?,
-    val profile2: ProfileSealed? = null,
+    val profile: Profile?,
+    val profile2: Profile? = null,
     val profileName: String?,
     val profileName2: String? = null,
     val date: String? = null,
@@ -82,8 +82,8 @@ data class ProfileViewerData(
 fun ProfileViewerScreen(
     data: ProfileViewerData,
     onClose: () -> Unit,
-    profileSingleContent: @Composable (ProfileSealed) -> Unit,
-    profileCompareContent: @Composable (ProfileSealed, ProfileSealed) -> Unit,
+    profileSingleContent: @Composable (Profile) -> Unit,
+    profileCompareContent: @Composable (Profile, Profile) -> Unit,
     profileRow: @Composable (String, String) -> Unit,
     showHeader: Boolean = true,
     modifier: Modifier = Modifier

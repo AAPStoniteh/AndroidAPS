@@ -22,7 +22,7 @@ import app.aaps.core.graph.BasalProfileGraphCompose
 import app.aaps.core.graph.IcProfileGraphCompose
 import app.aaps.core.graph.IsfProfileGraphCompose
 import app.aaps.core.graph.TargetBgProfileGraphCompose
-import app.aaps.core.objects.profile.ProfileSealed
+import app.aaps.core.interfaces.profile.Profile
 import app.aaps.core.ui.R
 import app.aaps.core.ui.compose.AapsTheme
 
@@ -59,11 +59,11 @@ data class ProfileCompareRow(
  */
 @Composable
 fun ProfileSingleContent(
-    profile: ProfileSealed,
-    getIcList: (ProfileSealed) -> String,
-    getIsfList: (ProfileSealed) -> String,
-    getBasalList: (ProfileSealed) -> String,
-    getTargetList: (ProfileSealed) -> String,
+    profile: Profile,
+    getIcList: (Profile) -> String,
+    getIsfList: (Profile) -> String,
+    getBasalList: (Profile) -> String,
+    getTargetList: (Profile) -> String,
     formatDia: (Double) -> String,
     formatBasalSum: (Double) -> String
 ) {
@@ -162,7 +162,7 @@ fun ProfileSingleContent(
                 )
                 // Sum displayed above graph
                 Text(
-                    text = "∑ " + formatBasalSum(profile.baseBasalSum()),
+                    text = "∑ " + formatBasalSum(profile.percentageBasalSum()),
                     style = MaterialTheme.typography.bodySmall,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
@@ -235,8 +235,8 @@ fun ProfileSingleContent(
  */
 @Composable
 fun ProfileCompareContent(
-    profile1: ProfileSealed,
-    profile2: ProfileSealed,
+    profile1: Profile,
+    profile2: Profile,
     unitsText: String,
     formatDia: (Double) -> String,
     shortHourUnit: String,

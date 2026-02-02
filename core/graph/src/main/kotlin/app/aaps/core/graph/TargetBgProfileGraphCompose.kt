@@ -92,7 +92,7 @@ fun TargetBgProfileGraphCompose(
                     series(y = targetHighValues1)
                     series(y = targetLowValues1)
                 }
-                extras { extraStore -> extraStore[LegendLabelKey] = listOf(profile2Name, profile1Name) }
+                extras { extraStore -> extraStore[LegendLabelKey] = listOf(profile1Name, profile2Name) }
             }
         } else {
             modelProducer.runTransaction {
@@ -105,8 +105,8 @@ fun TargetBgProfileGraphCompose(
     }
 
     val legendItemLabelComponent = rememberTextComponent(style = TextStyle(color = vicoTheme.textColor))
-    val legendIcon1 = rememberShapeComponent(fill = Fill(profile2Color))
-    val legendIcon2 = rememberShapeComponent(fill = Fill(profile1Color))
+    val legendIcon1 = rememberShapeComponent(fill = Fill(profile1Color))
+    val legendIcon2 = rememberShapeComponent(fill = Fill(profile2Color))
     CartesianChartHost(
         chart = rememberCartesianChart(
             rememberLineCartesianLayer(
