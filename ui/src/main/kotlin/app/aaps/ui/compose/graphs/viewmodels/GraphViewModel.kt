@@ -6,7 +6,7 @@ import app.aaps.core.interfaces.logging.AAPSLogger
 import app.aaps.core.interfaces.logging.LTag
 import app.aaps.core.interfaces.overview.graph.BgDataPoint
 import app.aaps.core.interfaces.overview.graph.BgInfoData
-import app.aaps.core.interfaces.overview.graph.CalculatedGraphDataCache
+import app.aaps.core.interfaces.overview.graph.OverviewDataCache
 import app.aaps.core.interfaces.resources.ResourceHelper
 import app.aaps.core.interfaces.utils.DateUtil
 import app.aaps.core.keys.UnitDoubleKey
@@ -48,7 +48,7 @@ data class BgInfoUiState(
 )
 
 class GraphViewModel @Inject constructor(
-    cache: CalculatedGraphDataCache,
+    cache: OverviewDataCache,
     private val aapsLogger: AAPSLogger,
     preferences: Preferences,
     private val dateUtil: DateUtil,

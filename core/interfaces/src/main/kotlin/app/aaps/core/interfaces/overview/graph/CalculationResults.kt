@@ -89,6 +89,7 @@ data class GraphDataPoint(
  * Deviation type for color classification in deviation bars
  */
 enum class DeviationType {
+
     POSITIVE,    // Green - above expected (pastSensitivity = "+")
     NEGATIVE,    // Red - below expected (pastSensitivity = "-")
     EQUAL,       // Black/gray - as expected (pastSensitivity = "=")
@@ -183,4 +184,46 @@ data class DevSlopeGraphData(
  */
 data class VarSensGraphData(
     val varSens: List<GraphDataPoint>
+)
+
+// ============================================================================
+// Overview Display State (TempTarget, Profile chips)
+// ============================================================================
+
+/**
+ * Temp target chip state classification
+ */
+enum class TempTargetState {
+
+    /** No temp target, showing profile default */
+    NONE,
+
+    /** Temp target is active */
+    ACTIVE,
+
+    /** No temp target, but APS adjusted the target */
+    ADJUSTED
+}
+
+/**
+ * Temp target display data for overview chips.
+ * Stores raw timing data - ViewModel computes progress from current time.
+ */
+data class TempTargetDisplayData(
+    val targetText: String,              // Formatted target range + "until HH:MM"
+    val state: TempTargetState,          // NONE/ACTIVE/ADJUSTED for UI styling
+    val timestamp: Long,                 // When TT started (for progress calculation)
+    val duration: Long                   // TT duration in ms (0 if not active)
+)
+
+/**
+ * Profile display data for overview chips.
+ * Stores raw timing data - ViewModel computes progress from current time.
+ */
+data class ProfileDisplayData(
+    val profileName: String,             // Profile name with remaining time
+    val isLoaded: Boolean,               // True if profile is loaded
+    val isModified: Boolean,             // True if percentage/timeshift/duration modified
+    val timestamp: Long,                 // When profile switch started (for progress)
+    val duration: Long                   // Profile switch duration in ms (0 if permanent)
 )

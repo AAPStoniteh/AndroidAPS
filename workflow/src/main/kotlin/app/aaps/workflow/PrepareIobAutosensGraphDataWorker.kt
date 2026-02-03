@@ -9,7 +9,6 @@ import app.aaps.core.data.aps.SMBDefaults
 import app.aaps.core.graph.data.BarGraphSeries
 import app.aaps.core.graph.data.DataPointWithLabelInterface
 import app.aaps.core.graph.data.DeviationDataPointLegacy
-import app.aaps.core.interfaces.overview.graph.DeviationDataPoint
 import app.aaps.core.graph.data.FixedLineGraphSeries
 import app.aaps.core.graph.data.LineGraphSeries
 import app.aaps.core.graph.data.PointsWithLabelGraphSeries
@@ -27,14 +26,15 @@ import app.aaps.core.interfaces.overview.OverviewMenus
 import app.aaps.core.interfaces.overview.graph.AbsIobGraphData
 import app.aaps.core.interfaces.overview.graph.ActivityGraphData
 import app.aaps.core.interfaces.overview.graph.BgiGraphData
-import app.aaps.core.interfaces.overview.graph.CalculatedGraphDataCache
 import app.aaps.core.interfaces.overview.graph.CobFailOverPoint
 import app.aaps.core.interfaces.overview.graph.CobGraphData
-import app.aaps.core.interfaces.overview.graph.DeviationsGraphData
-import app.aaps.core.interfaces.overview.graph.DeviationType
 import app.aaps.core.interfaces.overview.graph.DevSlopeGraphData
+import app.aaps.core.interfaces.overview.graph.DeviationDataPoint
+import app.aaps.core.interfaces.overview.graph.DeviationType
+import app.aaps.core.interfaces.overview.graph.DeviationsGraphData
 import app.aaps.core.interfaces.overview.graph.GraphDataPoint
 import app.aaps.core.interfaces.overview.graph.IobGraphData
+import app.aaps.core.interfaces.overview.graph.OverviewDataCache
 import app.aaps.core.interfaces.overview.graph.RatioGraphData
 import app.aaps.core.interfaces.overview.graph.VarSensGraphData
 import app.aaps.core.interfaces.profile.ProfileFunction
@@ -71,7 +71,7 @@ class PrepareIobAutosensGraphDataWorker(
     @Inject lateinit var decimalFormatter: DecimalFormatter
 
     // MIGRATION: KEEP - New cache for Compose graphs
-    @Inject lateinit var calculatedGraphDataCache: CalculatedGraphDataCache
+    @Inject lateinit var overviewDataCache: OverviewDataCache
 
     private var ctx: Context
 
@@ -132,7 +132,7 @@ class PrepareIobAutosensGraphDataWorker(
         val fromTimeOld = data.overviewData.fromTime
 
         // MIGRATION: KEEP - Get 24h time range from cache for Compose
-        val cacheTimeRange = calculatedGraphDataCache.timeRangeFlow.value
+        val cacheTimeRange = overviewDataCache.timeRangeFlow.value
         val fromTimeNew = cacheTimeRange?.fromTime ?: fromTimeOld
         val endTimeNew = cacheTimeRange?.endTime ?: endTimeOld
 
@@ -297,12 +297,12 @@ class PrepareIobAutosensGraphDataWorker(
 
                 // Deviations for Compose (with type instead of color)
                 val deviationType = when {
-                    autosensData.type == "uam" -> DeviationType.UAM
-                    autosensData.type == "csf" -> DeviationType.CSF
+                    autosensData.type == "uam"          -> DeviationType.UAM
+                    autosensData.type == "csf"          -> DeviationType.CSF
                     autosensData.pastSensitivity == "C" -> DeviationType.CSF
                     autosensData.pastSensitivity == "+" -> DeviationType.POSITIVE
                     autosensData.pastSensitivity == "-" -> DeviationType.NEGATIVE
-                    else -> DeviationType.EQUAL
+                    else                                -> DeviationType.EQUAL
                 }
                 deviationsListCompose.add(DeviationDataPoint(time, autosensData.deviation, deviationType))
 
@@ -439,52 +439,52 @@ class PrepareIobAutosensGraphDataWorker(
         // ========== MIGRATION: DELETE - End VAR_SENS GraphView ==========
 
         // ========== MIGRATION: KEEP - Start Compose cache updates ==========
-        calculatedGraphDataCache.updateIobGraph(
+        overviewDataCache.updateIobGraph(
             IobGraphData(
                 iob = iobListCompose,
                 predictions = iobPredictionsListCompose
             )
         )
-        calculatedGraphDataCache.updateAbsIobGraph(
+        overviewDataCache.updateAbsIobGraph(
             AbsIobGraphData(
                 absIob = absIobListCompose
             )
         )
-        calculatedGraphDataCache.updateCobGraph(
+        overviewDataCache.updateCobGraph(
             CobGraphData(
                 cob = cobListCompose,
                 failOverPoints = cobFailOverListCompose
             )
         )
-        calculatedGraphDataCache.updateActivityGraph(
+        overviewDataCache.updateActivityGraph(
             ActivityGraphData(
                 activity = activityListCompose,
                 activityPrediction = activityPredictionListCompose
             )
         )
-        calculatedGraphDataCache.updateBgiGraph(
+        overviewDataCache.updateBgiGraph(
             BgiGraphData(
                 bgi = bgiListCompose,
                 bgiPrediction = bgiPredictionListCompose
             )
         )
-        calculatedGraphDataCache.updateDeviationsGraph(
+        overviewDataCache.updateDeviationsGraph(
             DeviationsGraphData(
                 deviations = deviationsListCompose
             )
         )
-        calculatedGraphDataCache.updateRatioGraph(
+        overviewDataCache.updateRatioGraph(
             RatioGraphData(
                 ratio = ratioListCompose
             )
         )
-        calculatedGraphDataCache.updateDevSlopeGraph(
+        overviewDataCache.updateDevSlopeGraph(
             DevSlopeGraphData(
                 dsMax = dsMaxListCompose,
                 dsMin = dsMinListCompose
             )
         )
-        calculatedGraphDataCache.updateVarSensGraph(
+        overviewDataCache.updateVarSensGraph(
             VarSensGraphData(
                 varSens = varSensListCompose
             )

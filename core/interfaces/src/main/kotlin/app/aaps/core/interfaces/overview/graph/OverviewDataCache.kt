@@ -3,38 +3,45 @@ package app.aaps.core.interfaces.overview.graph
 import kotlinx.coroutines.flow.StateFlow
 
 /**
- * Cache for calculated graph data. Populated by workers, observed by ViewModel via StateFlow.
- * This replaces OverviewDataImpl for the new Compose graph system.
+ * Cache for overview data. Populated reactively by observing database changes, observed by ViewModels via StateFlow.
+ * This replaces OverviewDataImpl for the new Compose system.
  *
- * Architecture: Independent Series Updates
- * - Each series has its own StateFlow
- * - Workers update their series independently
- * - ViewModel/UI collects each flow separately
- * - Only the changed series triggers recomposition
+ * Architecture: Reactive Data Observation
+ * - Observes database changes (GV, TT, EPS) via Flow
+ * - Updates state flows immediately when data changes
+ * - No dependency on calculation workflow for basic display data
+ * - Each data type has its own StateFlow for granular updates
  *
- * MIGRATION NOTE: During migration, workers populate BOTH this cache and OverviewDataImpl.
+ * MIGRATION NOTE: During migration, workers may still populate some graph data.
  * After migration complete, OverviewDataImpl will be deleted.
  */
-interface CalculatedGraphDataCache {
+interface OverviewDataCache {
 
-    // Time range - observable, recalculated as series arrive
+    // =========================================================================
+    // Time range
+    // =========================================================================
     val timeRangeFlow: StateFlow<TimeRange?>
     fun updateTimeRange(range: TimeRange?)
 
     // Calculation progress (0-100)
     var calcProgressPct: Int
 
-    // BG data - each series independent
+    // =========================================================================
+    // BG data flows
+    // =========================================================================
     val bgReadingsFlow: StateFlow<List<BgDataPoint>>
     val bucketedDataFlow: StateFlow<List<BgDataPoint>>
-
-    // BG info for overview info section display
     val bgInfoFlow: StateFlow<BgInfoData?>
 
-    // Update methods for workers - each triggers only its flow
     fun updateBgReadings(data: List<BgDataPoint>)
     fun updateBucketedData(data: List<BgDataPoint>)
     fun updateBgInfo(data: BgInfoData?)
+
+    // =========================================================================
+    // Overview chip display data (reactive to database changes)
+    // =========================================================================
+    val tempTargetFlow: StateFlow<TempTargetDisplayData?>
+    val profileFlow: StateFlow<ProfileDisplayData?>
 
     // =========================================================================
     // Secondary graph flows (Phase 5) - one per graph

@@ -1,12 +1,12 @@
 package app.aaps.ui.di
 
-import app.aaps.core.interfaces.overview.graph.CalculatedGraphDataCache
+import app.aaps.core.interfaces.overview.graph.OverviewDataCache
 import app.aaps.ui.activities.BolusProgressHelperActivity
 import app.aaps.ui.activities.ErrorActivity
 import app.aaps.ui.activities.ProfileViewerActivity
 import app.aaps.ui.activities.QuickWizardListActivity
 import app.aaps.ui.activities.TDDStatsActivity
-import app.aaps.ui.compose.graphs.CalculatedGraphDataCacheImpl
+import app.aaps.ui.compose.graphs.OverviewDataCacheImpl
 import app.aaps.ui.dialogs.BolusProgressDialog
 import app.aaps.ui.dialogs.CalibrationDialog
 import app.aaps.ui.dialogs.CarbsDialog
@@ -37,7 +37,7 @@ abstract class UiModule {
     @Module
     interface Bindings {
 
-        @Binds fun bindCalculatedGraphDataCache(impl: CalculatedGraphDataCacheImpl): CalculatedGraphDataCache
+        @Binds fun bindOverviewDataCache(impl: OverviewDataCacheImpl): OverviewDataCache
     }
 
     @ContributesAndroidInjector abstract fun contributesAlarmSoundService(): AlarmSoundService

@@ -395,7 +395,7 @@ class ComposeMainActivity : DaggerAppCompatActivityWithResult() {
 
     override fun onResume() {
         super.onResume()
-        mainViewModel.refreshProfileState()
+        // Profile and TempTarget state are now updated reactively via OverviewDataCache flows
         actionsViewModel.refreshState()
     }
 
@@ -447,11 +447,11 @@ class ComposeMainActivity : DaggerAppCompatActivityWithResult() {
 
             is MainMenuItem.Treatments        -> navController.navigate(AppRoute.Treatments.route)
 
-            is MainMenuItem.HistoryBrowser -> {
+            is MainMenuItem.HistoryBrowser    -> {
                 startActivity(Intent(this, HistoryBrowseActivity::class.java).setAction("app.aaps.ComposeMainActivity"))
             }
 
-            is MainMenuItem.SetupWizard -> {
+            is MainMenuItem.SetupWizard       -> {
                 protectionCheck.requestProtection(ProtectionCheck.Protection.PREFERENCES) { result ->
                     if (result == ProtectionResult.GRANTED) {
                         startActivity(Intent(this, SetupWizardActivity::class.java).setAction("app.aaps.ComposeMainActivity"))
@@ -463,7 +463,7 @@ class ComposeMainActivity : DaggerAppCompatActivityWithResult() {
             is MainMenuItem.ProfileHelper     -> navController.navigate(AppRoute.ProfileHelper.route)
             is MainMenuItem.About             -> mainViewModel.setShowAboutDialog(true)
 
-            is MainMenuItem.Exit -> {
+            is MainMenuItem.Exit              -> {
                 finish()
                 configBuilder.exitApp("Menu", Sources.Aaps, false)
             }

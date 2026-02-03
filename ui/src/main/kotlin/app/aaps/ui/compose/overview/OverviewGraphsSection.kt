@@ -6,6 +6,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -21,7 +26,6 @@ import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.drop
 
 /**
  * Overview graphs section using Vico charts.
@@ -90,6 +94,19 @@ fun OverviewGraphsSection(
                 iobScrollState.scroll(Scroll.Absolute.pixels(scroll))
                 cobScrollState.scroll(Scroll.Absolute.pixels(scroll))
             }
+    }
+
+    // Auto-scroll to end when new BG value arrives
+    val bgInfoState by graphViewModel.bgInfoState.collectAsState()
+    var lastBgTimestamp by remember { mutableLongStateOf(0L) }
+
+    LaunchedEffect(bgInfoState.bgInfo?.timestamp) {
+        val newTimestamp = bgInfoState.bgInfo?.timestamp ?: return@LaunchedEffect
+        if (lastBgTimestamp != 0L && newTimestamp > lastBgTimestamp) {
+            // New BG arrived - scroll all graphs to show latest data
+            bgScrollState.scroll(Scroll.Absolute.End)
+        }
+        lastBgTimestamp = newTimestamp
     }
 
     Column(

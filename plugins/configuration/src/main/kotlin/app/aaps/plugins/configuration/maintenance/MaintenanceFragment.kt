@@ -18,6 +18,7 @@ import app.aaps.core.interfaces.logging.UserEntryLogger
 import app.aaps.core.interfaces.maintenance.FileListProvider
 import app.aaps.core.interfaces.maintenance.ImportExportPrefs
 import app.aaps.core.interfaces.overview.OverviewData
+import app.aaps.core.interfaces.overview.graph.OverviewDataCache
 import app.aaps.core.interfaces.plugin.ActivePlugin
 import app.aaps.core.interfaces.plugin.OwnDatabasePlugin
 import app.aaps.core.interfaces.protection.ProtectionCheck
@@ -62,6 +63,7 @@ class MaintenanceFragment : DaggerFragment() {
     @Inject lateinit var pumpSync: PumpSync
     @Inject lateinit var iobCobCalculator: IobCobCalculator
     @Inject lateinit var overviewData: OverviewData
+    @Inject lateinit var overviewDataCache: OverviewDataCache
     @Inject lateinit var fabricPrivacy: FabricPrivacy
     @Inject lateinit var uiInteraction: UiInteraction
     @Inject lateinit var activePlugin: ActivePlugin
@@ -122,6 +124,7 @@ class MaintenanceFragment : DaggerFragment() {
                                 dataSyncSelectorXdrip.resetToNextFullSync()
                                 pumpSync.connectNewPump()
                                 overviewData.reset()
+                                overviewDataCache.reset()
                                 iobCobCalculator.ads.reset()
                                 iobCobCalculator.clearCache()
                             }

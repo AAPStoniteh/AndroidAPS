@@ -2,52 +2,40 @@ package app.aaps.ui.compose.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.aaps.core.data.model.EPS
-import app.aaps.core.data.model.GlucoseUnit
-import app.aaps.core.data.model.TT
 import app.aaps.core.data.plugin.PluginType
-import app.aaps.core.interfaces.aps.Loop
 import app.aaps.core.interfaces.configuration.Config
 import app.aaps.core.interfaces.configuration.ConfigBuilder
-import app.aaps.core.interfaces.db.PersistenceLayer
-import app.aaps.core.interfaces.db.observeChanges
-import app.aaps.core.interfaces.nsclient.ProcessedDeviceStatusData
+import app.aaps.core.interfaces.overview.graph.OverviewDataCache
+import app.aaps.core.interfaces.overview.graph.TempTargetState
 import app.aaps.core.interfaces.plugin.ActivePlugin
 import app.aaps.core.interfaces.plugin.PluginBase
-import app.aaps.core.interfaces.profile.ProfileFunction
-import app.aaps.core.interfaces.profile.ProfileUtil
 import app.aaps.core.interfaces.resources.ResourceHelper
 import app.aaps.core.interfaces.ui.IconsProvider
 import app.aaps.core.interfaces.utils.DateUtil
 import app.aaps.core.interfaces.utils.fabric.FabricPrivacy
 import app.aaps.core.keys.interfaces.Preferences
-import app.aaps.core.objects.profile.ProfileSealed
 import app.aaps.ui.compose.alertDialogs.AboutDialogData
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.abs
 
 class MainViewModel @Inject constructor(
     private val activePlugin: ActivePlugin,
     private val configBuilder: ConfigBuilder,
     private val config: Config,
     private val preferences: Preferences,
-    private val profileFunction: ProfileFunction,
-    private val profileUtil: ProfileUtil,
-    private val persistenceLayer: PersistenceLayer,
     private val fabricPrivacy: FabricPrivacy,
     private val iconsProvider: IconsProvider,
     private val rh: ResourceHelper,
     private val dateUtil: DateUtil,
-    private val loop: Loop,
-    private val processedDeviceStatusData: ProcessedDeviceStatusData
+    private val overviewDataCache: OverviewDataCache
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainUiState())
@@ -56,110 +44,71 @@ class MainViewModel @Inject constructor(
     val versionName: String get() = config.VERSION_NAME
     val appIcon: Int get() = iconsProvider.getIcon()
 
-    init {
-        loadDrawerCategories()
-        observeProfileChanges()
-        observeTempTargetChanges()
-        startProgressUpdater()
-        // Initial refresh (observers only emit on changes, not current state)
-        refreshProfileState()
-        refreshTempTargetState()
-    }
-
-    private fun startProgressUpdater() {
-        // Update progress bars every minute
-        viewModelScope.launch {
-            while (true) {
-                delay(60_000L)
-                refreshProfileState()
-                refreshTempTargetState()
-            }
+    // Ticker for time-based progress updates (every 30 seconds)
+    private val progressTicker = flow {
+        while (true) {
+            emit(dateUtil.now())
+            delay(30_000L)
         }
     }
 
-    private fun observeProfileChanges() {
-        // Update profile state when profile changes (using Flow from PersistenceLayer)
-        persistenceLayer.observeChanges<EPS>()
-            .onEach {
-                refreshProfileState()
-                refreshTempTargetState() // TT chip depends on profile being loaded
-            }
-            .launchIn(viewModelScope)
+    init {
+        loadDrawerCategories()
+        observeTempTargetAndProfile()
     }
 
-    private fun observeTempTargetChanges() {
-        // Update TempTarget state when TT changes
-        persistenceLayer.observeChanges<TT>()
-            .onEach { refreshTempTargetState() }
-            .launchIn(viewModelScope)
-    }
+    /**
+     * Observe TempTarget and Profile from cache, combined with ticker for progress updates.
+     * Progress is computed from timestamp/duration using current time.
+     */
+    private fun observeTempTargetAndProfile() {
+        combine(
+            overviewDataCache.tempTargetFlow,
+            overviewDataCache.profileFlow,
+            progressTicker
+        ) { ttData, profileData, now ->
+            // Compute TT progress from raw timing data
+            val ttProgress = if (ttData != null && ttData.duration > 0) {
+                val elapsed = now - ttData.timestamp
+                (elapsed.toFloat() / ttData.duration.toFloat()).coerceIn(0f, 1f)
+            } else 0f
 
-    fun refreshTempTargetState() {
-        viewModelScope.launch {
-            val units = profileFunction.getUnits()
-            val now = dateUtil.now()
-            val tempTarget = persistenceLayer.getTemporaryTargetActiveAt(now)
-
-            val (text: String, state: TempTargetChipState, progress: Float) = if (tempTarget != null) {
-                // Active TT - show target range + "until HH:MM"
-                val targetText = profileUtil.toTargetRangeString(tempTarget.lowTarget, tempTarget.highTarget, GlucoseUnit.MGDL, units) +
-                    " " + dateUtil.untilString(tempTarget.end, rh)
-                val elapsed = now - tempTarget.timestamp
-                val ttProgress = (elapsed.toFloat() / tempTarget.duration.toFloat()).coerceIn(0f, 1f)
-                Triple(targetText, TempTargetChipState.Active, ttProgress)
-            } else {
-                // No active TT - check profile
-                val profile = profileFunction.getProfile()
-                if (profile != null) {
-                    // Check if APS/AAPSCLIENT has adjusted target (same logic as OverviewFragment)
-                    val targetUsed = when {
-                        config.APS        -> loop.lastRun?.constraintsProcessed?.targetBG ?: 0.0
-                        config.AAPSCLIENT -> processedDeviceStatusData.getAPSResult()?.targetBG ?: 0.0
-                        else              -> 0.0
-                    }
-
-                    if (targetUsed != 0.0 && abs(profile.getTargetMgdl() - targetUsed) > 0.01) {
-                        // APS adjusted target
-                        val apsTarget = profileUtil.toTargetRangeString(targetUsed, targetUsed, GlucoseUnit.MGDL, units)
-                        Triple(apsTarget, TempTargetChipState.Adjusted, 0f)
-                    } else {
-                        // Default profile target
-                        val profileTarget = profileUtil.toTargetRangeString(profile.getTargetLowMgdl(), profile.getTargetHighMgdl(), GlucoseUnit.MGDL, units)
-                        Triple(profileTarget, TempTargetChipState.None, 0f)
-                    }
-                } else {
-                    // No profile loaded yet
-                    Triple("", TempTargetChipState.None, 0f)
-                }
-            }
+            // Compute profile progress from raw timing data
+            val profileProgress = if (profileData != null && profileData.duration > 0) {
+                val elapsed = now - profileData.timestamp
+                (elapsed.toFloat() / profileData.duration.toFloat()).coerceIn(0f, 1f)
+            } else 0f
 
             _uiState.update {
                 it.copy(
-                    tempTargetText = text,
-                    tempTargetState = state,
-                    tempTargetProgress = progress
+                    // TempTarget state
+                    tempTargetText = ttData?.targetText ?: "",
+                    tempTargetState = ttData?.state?.toChipState() ?: TempTargetChipState.None,
+                    tempTargetProgress = ttProgress,
+                    // Profile state
+                    isProfileLoaded = profileData?.isLoaded ?: false,
+                    profileName = profileData?.profileName ?: "",
+                    isProfileModified = profileData?.isModified ?: false,
+                    profileProgress = profileProgress
                 )
             }
-        }
+        }.launchIn(viewModelScope)
+    }
+
+    // Map cache state to UI chip state
+    private fun TempTargetState.toChipState(): TempTargetChipState = when (this) {
+        TempTargetState.NONE     -> TempTargetChipState.None
+        TempTargetState.ACTIVE   -> TempTargetChipState.Active
+        TempTargetState.ADJUSTED -> TempTargetChipState.Adjusted
     }
 
     private fun loadDrawerCategories() {
         viewModelScope.launch {
             val categories = buildDrawerCategories()
-            val profile = profileFunction.getProfile()
-            val isModified = profile?.let {
-                if (it is ProfileSealed.EPS) {
-                    it.value.originalPercentage != 100 || it.value.originalTimeshift != 0L || it.value.originalDuration != 0L
-                } else false
-            } ?: false
-
             _uiState.update { state ->
                 state.copy(
                     drawerCategories = categories,
-                    isSimpleMode = preferences.simpleMode,
-                    isProfileLoaded = profile != null,
-                    profileName = profileFunction.getProfileNameWithRemainingTime(),
-                    isProfileModified = isModified
+                    isSimpleMode = preferences.simpleMode
                 )
             }
         }
@@ -321,33 +270,6 @@ class MainViewModel @Inject constructor(
     // Navigation state
     fun setNavDestination(destination: MainNavDestination) {
         _uiState.update { it.copy(currentNavDestination = destination) }
-    }
-
-    // Profile state
-    fun refreshProfileState() {
-        val profile = profileFunction.getProfile()
-        val now = dateUtil.now()
-        var isModified = false
-        var progress = 0f
-
-        if (profile is ProfileSealed.EPS) {
-            val eps = profile.value
-            isModified = eps.originalPercentage != 100 || eps.originalTimeshift != 0L || eps.originalDuration != 0L
-            // Calculate progress for temporary profile switch
-            if (eps.originalDuration > 0) {
-                val elapsed = now - eps.timestamp
-                progress = (elapsed.toFloat() / eps.originalDuration.toFloat()).coerceIn(0f, 1f)
-            }
-        }
-
-        _uiState.update {
-            it.copy(
-                isProfileLoaded = profile != null,
-                profileName = profileFunction.getProfileNameWithRemainingTime(),
-                isProfileModified = isModified,
-                profileProgress = progress
-            )
-        }
     }
 
     // Plugin toggle
