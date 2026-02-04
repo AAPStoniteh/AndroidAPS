@@ -4,25 +4,26 @@
     <string name="smscommunicator">Giao tiếp SMS</string>
     <string name="smscommunicator_shortname">SMS</string>
     <string name="description_sms_communicator">Điều khiển AAPS từ xa bằng lệnh SMS.</string>
-    <string name="smscommunicator_code_from_authenticator_for" comment="This is continuation of sentence: To [ACTION] reply with code">từ ứng dụng Xác minh cho: %1$s kèm theo mã PIN</string>
+    <string name="smscommunicator_code_from_authenticator_for" comment="This is continuation of sentence: To [ACTION] reply with code">từ ứng dụng Xác thực cho: %1$s kèm theo mã PIN</string>
     <string name="smscommunicator_otp_pin">Mã PIN bắt buộc bổ sung ở cuối token</string>
     <string name="smscommunicator_otp_pin_summary">Các chữ số bổ sung cần được ghi nhớ và gắn vào cuối mỗi mật khẩu dùng một lần (OTP) được tạo</string>
-    <string name="smscommunicator_tab_otp_label">Cài đặt xác minh</string>
+    <string name="smscommunicator_tab_otp_label">Cài đặt xác thực</string>
     <string name="smscommunicator_code_verify_label">Mã kiểm tra:</string>
     <string name="smscommunicator_code_verify_hint">OTP + PIN</string>
-    <string name="smscommunicator_code_verify_info">Mã xác minh gồm 6 chữ số hiển thị trong ứng dụng Authenticator (gọi là OTP) kèm theo 3 chữ số hoặc nhiều hơn của mã PIN bắt buộc.</string>
-    <string name="smscommunicator_otp_reset_btn">Đặt lại Xác minh</string>
-    <string name="smscommunicator_otp_reset_prompt">Bạn có chắc chắn muốn đặt lại khóa Xác minh không? Thao tác này sẽ làm vô hiệu hóa tất cả các Authenticator đã được cấu hình, và bạn sẽ cần thiết lập lại chúng.</string>
-    <string name="smscommunicator_otp_reset_successful">Đã tạo khóa Authenticator mới! Hãy dùng mã QR mới để cấu hình lại.</string>
+    <string name="smscommunicator_code_verify_info">Mã xác thực gồm 6 chữ số hiển thị trong ứng dụng Authenticator (gọi là OTP) kèm theo 3 chữ số hoặc nhiều hơn của mã PIN bắt buộc.</string>
+    <string name="smscommunicator_otp_reset_btn">Đặt lại các xác thực</string>
+    <string name="smscommunicator_otp_reset_title">Đặt lại khóa Xác thực</string>
+    <string name="smscommunicator_otp_reset_prompt">Bạn có chắc chắn muốn đặt lại khóa Xác thực không? Thao tác này sẽ làm vô hiệu hóa tất cả các xác thực đã được cấu hình, và bạn sẽ cần thiết lập lại chúng.</string>
+    <string name="smscommunicator_otp_reset_successful">Đã tạo khóa xác thực mới! Hãy dùng mã QR mới để cấu hình lại.</string>
     <string name="smscommunicator_otp_export_title">Đang xuất khóa bí mật OTP</string>
-    <string name="smscommunicator_otp_export_prompt">Bạn có chắc chắn muốn sao chép mã bí mật OTP vào bộ nhớ tạm không?\n\nBạn chỉ cần làm điều này nếu ứng dụng Authenticator gặp sự cố khi quét mã QR, bạn muốn nhập thủ công hoặc muốn cấu hình thiết bị OTP phần cứng bằng ứng dụng chuyên dụng.</string>
+    <string name="smscommunicator_otp_export_prompt">Bạn có chắc chắn muốn sao chép mã bí mật OTP vào bộ nhớ tạm không?\n\nBạn chỉ cần làm điều này nếu ứng dụng Xác thực gặp sự cố khi quét mã QR, bạn muốn nhập thủ công hoặc muốn cấu hình thiết bị OTP phần cứng bằng ứng dụng chuyên dụng.</string>
     <string name="smscommunicator_otp_export_successful">Mã bí mật OTP (dạng Base32) đã được xuất và sao chép vào bộ nhớ tạm. Hãy dán vào ứng dụng Authenticator hoặc thiết bị ghi OTP phần cứng!</string>
-    <string name="smscommunicator_otp_step1_install_header">1. Cài đặt Xác thực (Authenticator)</string>
+    <string name="smscommunicator_otp_step1_install_header">1. Cài đặt xác thực</string>
     <string name="smscommunicator_otp_step2_provisioning_header">2. Quét mã để thiết lập mã OTP cho AAPS</string>
     <string name="smscommunicator_otp_step3_test_header">3. Kiểm tra Mật khẩu dùng một lần (OTP)</string>
-    <string name="smscommunicator_otp_reset_header">Đặt lại Xác thực (Authenticator)</string>
+    <string name="smscommunicator_otp_reset_header">Đặt lại các xác thực</string>
     <string name="smscommunicator_otp_install_info">Trên mỗi điện thoại follower, cài ứng dụng Authenticator hỗ trợ TOTP (RFC 6238). Ví dụ miễn phí phổ biến:\n • Authy\n • Google Authenticator\n • LastPass Authenticator\n • FreeOTP Authenticator</string>
-    <string name="smscommunicator_otp_reset_warning">Việc đặt lại Authenticator sẽ làm vô hiệu hóa tất cả các Authenticator đã được cấu hình. Bạn sẽ cần thiết lập lại chúng!</string>
+    <string name="smscommunicator_otp_reset_warning">Việc đặt lại Xác thực sẽ làm vô hiệu hóa tất cả các xác thực đã được cấu hình. Bạn sẽ cần thiết lập lại chúng!</string>
     <string name="smscommunicator_otp_verification_ok">ĐỒNG Ý</string>
     <string name="smscommunicator_otp_verification_ivalid_size">KÍCH THƯỚC KHÔNG HỢP LỆ!</string>
     <string name="smscommunicator_otp_verification_wrong_pin">Mã PIN sai</string>
