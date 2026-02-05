@@ -26,11 +26,7 @@ class BlePreCheckImpl @Inject constructor(
     companion object {
 
         private const val PERMISSION_REQUEST_BLUETOOTH = 30242 // arbitrary.
-    }
 
-
-    override fun prerequisitesCheck(activity: AppCompatActivity): Boolean {
-        return prerequisitesCheck(activity, null)
     }
 
 
