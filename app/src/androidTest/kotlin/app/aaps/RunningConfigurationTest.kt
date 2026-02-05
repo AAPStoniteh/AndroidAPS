@@ -67,18 +67,20 @@ class RunningConfigurationTest @Inject constructor() {
         assertThat(persistenceLayer.getRunningModes().size).isEqualTo(1)
         persistenceLayer.clearDatabases()
 
-        // Change to permanent CLOSED_LOOP
+        // Change to permanent OPEN_LOOP
+        // Note: CLOSED_LOOP can't be used here because LoopPlugin's constraint checker
+        // auto-downgrades it to OPEN_LOOP when closedLoopAllowed is false in test environment
         persistenceLayer.insertOrUpdateRunningMode(
             RM(
                 timestamp = dateUtil.now(),
-                mode = RM.Mode.CLOSED_LOOP,
+                mode = RM.Mode.OPEN_LOOP,
                 duration = 0
             ),
-            action = Action.CLOSED_LOOP_MODE,
+            action = Action.OPEN_LOOP_MODE,
             note = "Test",
-            listValues = listOf(ValueWithUnit.SimpleString(RM.Mode.CLOSED_LOOP.toString())),
+            listValues = listOf(ValueWithUnit.SimpleString(RM.Mode.OPEN_LOOP.toString())),
             source = Sources.Loop
         )
-        assertThat(persistenceLayer.getRunningModeActiveAt(dateUtil.now()).mode).isEqualTo(RM.Mode.CLOSED_LOOP)
+        assertThat(persistenceLayer.getRunningModeActiveAt(dateUtil.now()).mode).isEqualTo(RM.Mode.OPEN_LOOP)
     }
 }
