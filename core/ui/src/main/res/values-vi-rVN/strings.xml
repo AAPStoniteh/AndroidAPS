@@ -44,9 +44,9 @@
     <string name="mute">Im lặng</string>
     <string name="success">Thành công</string>
     <string name="advanced_settings_title">Cài đặt nâng cao</string>
-    <string name="extendedbolusdeliveryerror">Tiêm liều Bolus mở rộng thất bại</string>
+    <string name="extendedbolusdeliveryerror">Tiêm liều Bolus kéo dài thất bại</string>
     <string name="aps_mode_title">Chế độ APS</string>
-    <string name="extended_bolus">Liều Bolus mở rộng</string>
+    <string name="extended_bolus">Liều Bolus kéo dài</string>
     <string name="paused">Đã tạm dừng</string>
     <string name="tdd_total">Tổng TDD</string>
     <string name="tdd_old_data">Dữ liệu cũ</string>
@@ -170,7 +170,7 @@
     <string name="ic_short">IC</string>
     <string name="isf_short">ISF</string>
     <string name="canceling_tbr_failed">Hủy liều nền tạm thời thất bại</string>
-    <string name="canceling_eb_failed">Hủy liều bolus mở rộng thất bại</string>
+    <string name="canceling_eb_failed">Hủy liều bolus kéo dài thất bại</string>
     <string name="virtualpump_uploadstatus_title">Tải trạng thái bơm lên NS hoặc Tidepool</string>
     <string name="iob_label">Insulin đang hoạt động (IOB)</string>
     <string name="loopstatus_targets">MỤC TIÊU:</string>
@@ -322,7 +322,7 @@
     <string name="uel_bolus">BOLUS</string>
     <string name="uel_bolus_calculator">TÍNH TOÁN BOLUS</string>
     <string name="uel_bolus_advisor">GỌI Ý BOLUS</string>
-    <string name="uel_extended_bolus">BOLUS MỞ RỘNG</string>
+    <string name="uel_extended_bolus">LIỀU BOLUS KÉO DÀI</string>
     <string name="uel_superbolus_tbr">SUPERBOLUS TBR</string>
     <string name="uel_carbs">CARBS</string>
     <string name="uel_extended_carbs">CARBS MỞ RỘNG</string>
@@ -348,7 +348,7 @@
     <string name="uel_accepts_temp_basal">CHO PHÉP LIỀU NỀN TẠM THỜI</string>
     <string name="uel_cancel_temp_basal">HỦY LIỀU NỀN TẠM</string>
     <string name="uel_cancel_bolus">HỦY LIỀU BOLUS</string>
-    <string name="uel_cancel_extended_bolus">HỦY BOLUS MỞ RỘNG</string>
+    <string name="uel_cancel_extended_bolus">HỦY LIỀU BOLUS KÉO DÀI</string>
     <string name="uel_cancel_tt">CANCEL TEMP TARGET</string>
     <string name="uel_careportal">CAREPORTAL</string>
     <string name="uel_sensor_location">VỊ TRÍ CẢM BIẾN</string>
@@ -368,7 +368,7 @@
     <string name="uel_bolus_removed">ĐÃ XÓA BOLUS</string>
     <string name="uel_carbs_removed">ĐÃ XÓA CARBS</string>
     <string name="uel_temp_basal_removed">ĐÃ XÓA LIỀU NỀN TẠM</string>
-    <string name="uel_extended_bolus_removed">ĐÃ XÓA BOLUS MỞ RỘNG</string>
+    <string name="uel_extended_bolus_removed">ĐÃ XÓA LIỀU BOLUS KÉO DÀI</string>
     <string name="uel_food">BỮA ĂN</string>
     <string name="uel_food_removed">ĐÃ XÓA BỮA ĂN</string>
     <string name="uel_profile_removed">ĐÃ XÓA HỒ SƠ</string>
@@ -437,7 +437,7 @@
     <!-- Command Queue + readStatus reasons -->
     <string name="bolus_u_min">BOLUS %1$.2f U</string>
     <string name="carbs_g">CARBS %1$d g</string>
-    <string name="extended_bolus_u_min">BOLUS MỞ RỘNG %1$.2f U trong %2$d phút</string>
+    <string name="extended_bolus_u_min">LIỀU BOLUS KÉO DÀI %1$.2f U trong %2$d phút</string>
     <string name="load_events">TẢI SỰ KIỆN</string>
     <string name="clear_alarms">XOÁ CẢNH BÁO</string>
     <string name="deactivate">HUỶ KÍCH HOẠT</string>
@@ -524,7 +524,7 @@
     <string name="last_bolus_label">Liều bolus gần nhất</string>
     <string name="base_basal_rate_label">Tỷ lệ liều nền cơ bản</string>
     <string name="tempbasal_label">Liều nền tạm thời</string>
-    <string name="extended_bolus_label">Liều Bolus mở rộng</string>
+    <string name="extended_bolus_label">Liều Bolus kéo dài</string>
     <string name="serial_number">Số sê-ri</string>
     <string name="disconnected">Ngắt kết nối</string>
     <string name="connecting">Đang kết nối</string>
