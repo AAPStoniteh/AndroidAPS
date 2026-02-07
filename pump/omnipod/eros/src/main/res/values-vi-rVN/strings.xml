@@ -6,9 +6,6 @@
     <!-- Omnipod Eros - Preferences -->
     <string name="omnipod_eros_preferences_pulse_log_button_enabled">Hiển thị nhật ký Pulse trong menu Quản lý Pod</string>
     <string name="omnipod_eros_preferences_riley_link_stats_button_enabled">Hiển thị thống kê RileyLink trong menu Quản lý Pod</string>
-    <string name="omnipod_eros_preferences_battery_change_logging_enabled">ChatGPT đã nói:
-
-Bật ghi nhật ký thay pin trong mục Actions</string>
     <string name="omnipod_eros_preferences_category_riley_link">RileyLink</string>
     <string name="omnipod_eros_preferences_notification_uncertain_tbr_sound_enabled">Đã bật âm thanh thông báo TBR không chắc chắn</string>
     <string name="omnipod_eros_preferences_notification_uncertain_smb_sound_enabled">Đã bật âm thanh thông báo SMB không chắc chắn</string>
