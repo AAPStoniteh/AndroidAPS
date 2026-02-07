@@ -4,10 +4,10 @@
     <string name="carbs_constraint_applied">Giới hạn Carbs đã bật</string>
     <string name="temp_target_short">TT</string>
     <string name="dialog_canceled">Đã hủy hộp thoại</string>
-    <string name="start_activity_tt">Start Activity TT</string>
-    <string name="start_eating_soon_tt">Start Eating soon TT</string>
-    <string name="start_hypo_tt">Start Hypo TT</string>
-    <string name="time_offset">Time offset</string>
+    <string name="start_activity_tt">Bắt đầu hoạt động thể lực (TT)</string>
+    <string name="start_eating_soon_tt">Sắp ăn (TT)</string>
+    <string name="start_hypo_tt">Bắt đầu hạ đường huyết (TT)</string>
+    <string name="time_offset">Lệch thời gian</string>
     <string name="unit_minute_short">phút</string>
     <string name="remind_to_bolus_later">Nhắc tiêm bolus sau</string>
     <string name="a11y_carb_reminder">đặt lời nhắc</string>
@@ -100,7 +100,7 @@
     <string name="treatments_carbs_label_string">Carbs:</string>
     <string name="tempbasals_netratio_label_string">Ratio:</string>
     <string name="tempbasals_iob_label_string">IOB:</string>
-    <string name="treatments_wizard_correction_label">Corr</string>
+    <string name="treatments_wizard_correction_label">Hiệu chỉnh</string>
     <string name="meal_bolus">Bữa ăn</string>
     <string name="prime">Mồi bơm</string>
     <string name="carbs_and_bolus">Carbs and bolus</string>
