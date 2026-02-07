@@ -583,7 +583,7 @@
     <string name="you_are_on_allowed_limit">Đã đạt giới hạn cho phép</string>
     <string name="format_hour_minute">%1$dh %2$dm</string>
     <!-- datetime layout -->
-    <string name="event_time_label">Event time</string>
+    <string name="event_time_label">Thời điểm</string>
     <!-- BluetoothDevicePreference -->
     <string name="need_connect_permission">Ứng dụng yêu cầu quyền Bluetooth</string>
     <!--    Combo-->
