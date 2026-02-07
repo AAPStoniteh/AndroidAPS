@@ -25,7 +25,7 @@
     <string name="data_uploaded">Dữ liệu đã được tải lên</string>
     <string name="glucose_values">Giá trị đường huyết</string>
     <string name="boluses">Liều bolus</string>
-    <string name="extended_boluses">Liều Bolus mở rộng</string>
+    <string name="extended_boluses">Liều Bolus kéo dài</string>
     <string name="carbohydrates">Carbohydrates</string>
     <string name="careportal_events">Sự kiện Careportal (trừ ghi chú)</string>
     <string name="profile_switches">Chuyển Hồ sơ</string>
