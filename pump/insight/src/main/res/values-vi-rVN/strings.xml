@@ -30,7 +30,7 @@
     <string name="insightpump_shortname">Sight</string>
     <string name="insight_alert_notification_channel">Cảnh báo bơm Insight</string>
     <string name="disable_vibration">Tắt rung khi tiêm bolus thủ công</string>
-    <string name="disable_vibration_summary">Dành cho bolus và bolus mở rộng (chỉ khả dụng với firmware Insight 3.x)</string>
+    <string name="disable_vibration_summary">Dành cho bolus và bolus kéo dài (chỉ khả dụng với firmware Insight 3.x)</string>
     <string name="disable_vibration_auto">Tắt rung khi tiêm bolus tự động</string>
     <string name="disable_vibration_auto_summary">Dành cho SMB và liều nền tạm thời với mô phỏng TBR (chỉ khả dụng với firmware Insight 3.x)</string>
     <string name="timeout_during_handshake">Hết thời gian chờ trong quá trình trao đổi – đặt lại Bluetooth</string>
@@ -53,7 +53,7 @@
     <string name="log_operating_mode_changes">Ghi lại thay đổi chế độ vận hành</string>
     <string name="log_alerts">Ghi lại cảnh báo</string>
     <string name="enable_tbr_emulation">Bật mô phỏng TBR</string>
-    <string name="enable_tbr_emulation_summary">Sử dụng liều bolus mở rộng thay vì TBR để vượt qua giới hạn 250%</string>
+    <string name="enable_tbr_emulation_summary">Sử dụng liều bolus kéo dài thay vì TBR để vượt qua giới hạn 250%</string>
     <string name="disconnect_delay">Thời gian trễ ngắt kết nối [giây]</string>
     <string name="max_recovery_duration">Thời gian hồi phục tối đa [giây]</string>
     <string name="min_recovery_duration">Thời gian hồi phục tối thiểu [giây]</string>
