@@ -249,7 +249,7 @@
     <string name="wizard_result_total">Tổng</string>
     <string name="wizard_insulin_format">%1$s U</string>
     <string name="insulin_unit_short">U</string>
-    <string name="wizard_result_correction_percentage">Corr. %1$d%%</string>
+    <string name="wizard_result_correction_percentage">Hiệu chỉnh. %1$d%%</string>
     <string name="expand_calculation_details">Nhấn để mở rộng chi tiết tính toán</string>
     <string name="wizard_confirmation_sent">Gửi</string>
     <string name="tile_settings">Cài đặt Tile</string>
