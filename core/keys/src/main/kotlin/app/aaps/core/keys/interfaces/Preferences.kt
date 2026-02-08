@@ -1,5 +1,7 @@
 package app.aaps.core.keys.interfaces
 
+import kotlinx.coroutines.flow.StateFlow
+
 interface Preferences {
 
     /**
@@ -47,6 +49,14 @@ interface Preferences {
      * @param value value
      */
     fun put(key: BooleanNonPreferenceKey, value: Boolean)
+
+    /**
+     * Observe [Boolean] value changes from [android.content.SharedPreferences]
+     *
+     * @param key [app.aaps.core.keys.interfaces.BooleanNonPreferenceKey] enum
+     * @return [StateFlow] that emits current value and all subsequent changes
+     */
+    fun observe(key: BooleanNonPreferenceKey): StateFlow<Boolean>
 
     /**
      * Get [Boolean] value from [android.content.SharedPreferences]
@@ -130,6 +140,14 @@ interface Preferences {
     fun put(key: StringNonPreferenceKey, value: String)
 
     /**
+     * Observe [String] value changes from [android.content.SharedPreferences]
+     *
+     * @param key [StringNonPreferenceKey] enum
+     * @return [StateFlow] that emits current value and all subsequent changes
+     */
+    fun observe(key: StringNonPreferenceKey): StateFlow<String>
+
+    /**
      * Get [String] value from [android.content.SharedPreferences]
      * In SimpleMode return default value
      * In FullMode return value from [android.content.SharedPreferences]
@@ -203,6 +221,14 @@ interface Preferences {
      * @param value value
      */
     fun put(key: DoubleNonPreferenceKey, value: Double)
+
+    /**
+     * Observe [Double] value changes from [android.content.SharedPreferences]
+     *
+     * @param key [app.aaps.core.keys.interfaces.DoubleNonPreferenceKey] enum
+     * @return [StateFlow] that emits current value and all subsequent changes
+     */
+    fun observe(key: DoubleNonPreferenceKey): StateFlow<Double>
 
     /**
      * Get [String] value from [android.content.SharedPreferences]
@@ -297,6 +323,14 @@ interface Preferences {
     fun put(key: IntNonPreferenceKey, value: Int)
 
     /**
+     * Observe [Int] value changes from [android.content.SharedPreferences]
+     *
+     * @param key [app.aaps.core.keys.interfaces.IntNonPreferenceKey] enum
+     * @return [StateFlow] that emits current value and all subsequent changes
+     */
+    fun observe(key: IntNonPreferenceKey): StateFlow<Int>
+
+    /**
      * Increment [Int] value in [android.content.SharedPreferences]
      *
      * @param key [app.aaps.core.keys.interfaces.IntNonPreferenceKey] enum
@@ -350,6 +384,14 @@ interface Preferences {
      * @param value value
      */
     fun put(key: LongNonPreferenceKey, value: Long)
+
+    /**
+     * Observe [Long] value changes from [android.content.SharedPreferences]
+     *
+     * @param key [app.aaps.core.keys.interfaces.LongNonPreferenceKey] enum
+     * @return [StateFlow] that emits current value and all subsequent changes
+     */
+    fun observe(key: LongNonPreferenceKey): StateFlow<Long>
 
     /**
      * Get [Long] value from [android.content.SharedPreferences]

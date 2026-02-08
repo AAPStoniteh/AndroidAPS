@@ -34,7 +34,9 @@ import app.aaps.core.keys.interfaces.StringComposedNonPreferenceKey
 import app.aaps.core.keys.interfaces.StringNonPreferenceKey
 import app.aaps.core.keys.interfaces.StringPreferenceKey
 import app.aaps.core.keys.interfaces.UnitDoublePreferenceKey
-import java.util.Locale
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -64,6 +66,12 @@ class PreferencesImpl @Inject constructor(
             IntentKey::class.java,
         )
 
+    private val booleanFlows = ConcurrentHashMap<String, MutableStateFlow<Boolean>>()
+    private val stringFlows = ConcurrentHashMap<String, MutableStateFlow<String>>()
+    private val doubleFlows = ConcurrentHashMap<String, MutableStateFlow<Double>>()
+    private val intFlows = ConcurrentHashMap<String, MutableStateFlow<Int>>()
+    private val longFlows = ConcurrentHashMap<String, MutableStateFlow<Long>>()
+
     override fun get(key: BooleanNonPreferenceKey): Boolean = sp.getBoolean(key.key, key.defaultValue)
 
     override fun getIfExists(key: BooleanNonPreferenceKey): Boolean? =
@@ -71,7 +79,11 @@ class PreferencesImpl @Inject constructor(
 
     override fun put(key: BooleanNonPreferenceKey, value: Boolean) {
         sp.putBoolean(key.key, value)
+        booleanFlows[key.key]?.value = value
     }
+
+    override fun observe(key: BooleanNonPreferenceKey): StateFlow<Boolean> =
+        booleanFlows.getOrPut(key.key) { MutableStateFlow(get(key)) }
 
     override fun get(key: BooleanPreferenceKey): Boolean = sp.getBoolean(key.key, key.defaultValue)
 
@@ -84,7 +96,11 @@ class PreferencesImpl @Inject constructor(
 
     override fun put(key: StringNonPreferenceKey, value: String) {
         sp.putString(key.key, value)
+        stringFlows[key.key]?.value = value
     }
+
+    override fun observe(key: StringNonPreferenceKey): StateFlow<String> =
+        stringFlows.getOrPut(key.key) { MutableStateFlow(get(key)) }
 
     override fun get(key: DoublePreferenceKey): Double = sp.getDouble(key.key, key.defaultValue)
 
@@ -95,7 +111,11 @@ class PreferencesImpl @Inject constructor(
 
     override fun put(key: DoubleNonPreferenceKey, value: Double) {
         sp.putDouble(key.key, value)
+        doubleFlows[key.key]?.value = value
     }
+
+    override fun observe(key: DoubleNonPreferenceKey): StateFlow<Double> =
+        doubleFlows.getOrPut(key.key) { MutableStateFlow(get(key)) }
 
     override fun get(key: UnitDoublePreferenceKey): Double =
         error("Not implemented")
@@ -126,10 +146,15 @@ class PreferencesImpl @Inject constructor(
 
     override fun put(key: IntNonPreferenceKey, value: Int) {
         sp.putInt(key.key, value)
+        intFlows[key.key]?.value = value
     }
+
+    override fun observe(key: IntNonPreferenceKey): StateFlow<Int> =
+        intFlows.getOrPut(key.key) { MutableStateFlow(get(key)) }
 
     override fun inc(key: IntNonPreferenceKey) {
         sp.incInt(key.key)
+        intFlows[key.key]?.let { it.value = get(key) }
     }
 
     override fun get(key: IntComposedNonPreferenceKey, vararg arguments: Any): Int =
@@ -148,12 +173,17 @@ class PreferencesImpl @Inject constructor(
 
     override fun put(key: LongNonPreferenceKey, value: Long) {
         sp.putLong(key.key, value)
+        longFlows[key.key]?.value = value
     }
+
+    override fun observe(key: LongNonPreferenceKey): StateFlow<Long> =
+        longFlows.getOrPut(key.key) { MutableStateFlow(get(key)) }
 
     override fun get(key: LongPreferenceKey): Long = sp.getLong(key.key, key.defaultValue)
 
     override fun inc(key: LongNonPreferenceKey) {
         sp.incLong(key.key)
+        longFlows[key.key]?.let { it.value = get(key) }
     }
 
     override fun remove(key: NonPreferenceKey) {

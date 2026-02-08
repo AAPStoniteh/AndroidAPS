@@ -12,3 +12,8 @@ android {
         minSdk = min(Versions.minSdk, Versions.wearMinSdk)  // Compatible with wear module
     }
 }
+
+dependencies {
+    api(platform(libs.kotlinx.coroutines.bom))
+    api(libs.kotlinx.coroutines.core)
+}
