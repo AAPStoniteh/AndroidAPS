@@ -46,6 +46,7 @@ import app.aaps.core.keys.R as KeysR
  * @param minValue Minimum allowed value for the slider range
  * @param maxValue Maximum allowed value for the slider range
  * @param step Step increment for slider (determines number of discrete positions)
+ * @param controlPoints Pairs of (position [0-1], value) to create a non linear slider, if null slider is linear
  * @param unitLabelResId Resource ID for unit label (e.g., R.string.units_min, R.string.units_percent)
  * @param decimalPlaces Number of decimal places for value display (0 = integer, default)
  * @param modifier Modifier for the root Column container
@@ -58,6 +59,7 @@ fun NumberInputRow(
     minValue: Double,
     maxValue: Double,
     step: Double,
+    controlPoints: List<Pair<Double, Double>>? = null,
     unitLabelResId: Int = 0,
     decimalPlaces: Int = 0,
     modifier: Modifier = Modifier
@@ -111,6 +113,7 @@ fun NumberInputRow(
             onValueChange = onValueChange,
             valueRange = minValue..maxValue,
             step = step,
+            controlPoints = controlPoints,
             modifier = Modifier.fillMaxWidth()
         )
     }
