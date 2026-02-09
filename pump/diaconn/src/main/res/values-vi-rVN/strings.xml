@@ -114,7 +114,7 @@
     <string name="diaconn_g8_errorcode_3">Không thể đặt thành lỗi kỹ thuật giao thức.</string>
     <string name="diaconn_g8_errorcode_4">Đang ở chế độ bữa ăn, không thể tiêm.</string>
     <string name="diaconn_g8_errorcode_6">Bị hủy bởi máy bơm</string>
-    <string name="diaconn_g8_errorcode_7">Đang xử lý tác vụ khác, tạm giới hạn cài đặt.</string>
+    <string name="diaconn_g8_errorcode_7">Đang thực hiện thao tác khác, các cài đặt ứng dụng bị hạn chế.</string>
     <string name="diaconn_g8_errorcode_8">Đang tiêm bolus khác, không thể tiêm thêm.</string>
     <string name="diaconn_g8_errorcode_9">Yêu cầu tiếp tục tiêm liều nền</string>
     <string name="diaconn_g8_errorcode_10">Đã hủy do bơm không phản hồi.</string>
