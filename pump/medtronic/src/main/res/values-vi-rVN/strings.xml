@@ -79,7 +79,7 @@
     <string name="ago">cách đây</string>
     <string name="medtronic_notification_check_time_date">Cần cập nhật đồng hồ Bơm</string>
     <!-- combo_notification_check_time_date -->
-    <string name="pump_time_updated">Đã cập nhật thời gian bơm insulin</string>
+    <string name="pump_time_updated">Đã cập nhật thời gian bơm</string>
     <string name="set_neutral_temps_title">Thiết lập liều nền tạm thời trung tính</string>
     <string name="set_neutral_temps_summary">Nếu được bật, tính năng này sẽ hủy liều nền tạm thời trước khi kết thúc mỗi giờ. Phương pháp này có thể giúp ngăn một số bơm phát tiếng bíp hoặc rung vào đầu giờ.</string>
     <string name="mdt_tbr_remaining">%1$.1f U/giờ (%2$d phút còn lại)</string>
