@@ -4,7 +4,7 @@
     <string name="setupwizard_units_prompt">Chọn đơn vị mà bạn muốn hiển thị giá trị</string>
     <string name="next_button">Tiếp theo</string>
     <string name="previous_button">Trước đó</string>
-    <string name="nav_setupwizard">Các bước cài đặt nhanh</string>
+    <string name="nav_setupwizard">Cài đặt nhanh</string>
     <string name="setupwizard_finish">KẾT THÚC</string>
     <string name="welcome">Chào mừng</string>
     <string name="welcometosetupwizard">Chào mừng đến với trình hướng dẫn cài đặt. Hệ thống sẽ hướng dẫn bạn từng bước trong quá trình thiết lập.\n</string>
@@ -62,7 +62,7 @@
     <string name="configbuilder_aps_description">Thuật toán APS nào sẽ thực hiện điều chỉnh điều trị?</string>
     <string name="configbuilder_general">Cài đặt chung</string>
     <string name="configbuilder_general_description">Đây là một số Tiện ích chung mà bạn có thể thấy hữu ích.</string>
-    <string name="configbuilder_sync">Synchronization</string>
+    <string name="configbuilder_sync">Đồng bộ hóa</string>
     <string name="configbuilder_sync_description">Các Tiện ích dùng để tải lên và đồng bộ dữ liệu.</string>
     <string name="configbuilder_constraints_description">Những giới hạn nào đang được áp dụng?</string>
     <string name="configbuilder_loop">Loop</string>
@@ -104,7 +104,7 @@
     <string name="different_password_used">Tệp này đã được xuất và mã hóa bằng mật khẩu khác. Vui lòng nhập mật khẩu cũ để giải mã tệp.</string>
     <string name="master_password_will_be_replaced">Khi nhập thành công, mật khẩu chính hiện tại SẼ BỊ THAY THẾ bằng mật khẩu chính cũ!</string>
     <string name="exported">Đã xuất cài đặt</string>
-    <string name="exported_failed">Xuất tùy cài đặt thất bại!</string>
+    <string name="exported_failed">Xuất tùy cài đặt tùy chọn thất bại!</string>
     <string name="filenotfound">Không tìm thấy tệp</string>
     <string name="goto_main_try_again">Vui lòng quay lại màn hình chính và thử lại.</string>
     <string name="restartingapp">Thoát ứng dụng để áp dụng thiết lập.</string>
