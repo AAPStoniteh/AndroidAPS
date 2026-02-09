@@ -10,6 +10,7 @@
     <string name="pump_status_busy">Bezig</string>
     <string name="pump_status_suspended">Onderbroken</string>
     <string name="pump_status_executing_command">Commando uitvoeren</string>
+    <!-- Commands -->
     <!-- PumpCommon - History Group -->
     <string name="history_group_basal">Basaalstanden</string>
     <string name="history_group_configuration">Instellingen</string>
