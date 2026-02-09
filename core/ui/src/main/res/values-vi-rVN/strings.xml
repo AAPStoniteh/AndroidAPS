@@ -22,7 +22,7 @@
     <string name="mmol">mmol/l</string>
     <string name="save">Lưu</string>
     <string name="snooze">Nhắc sau</string>
-    <string name="virtual_pump">Virtual Pump</string>
+    <string name="virtual_pump">Bơm mô phỏng</string>
     <string name="constraints">Giới hạn</string>
     <string name="superbolus">Superbolus</string>
     <string name="pump_paused">Bơm đã tạm dừng</string>
@@ -596,7 +596,7 @@
     <string name="location_not_found_title">Vị trí chưa được bật</string>
     <string name="location_not_found_message">Để phát hiện Bluetooth trên các thiết bị mới, cần bật dịch vụ vị trí. AAPS không theo dõi vị trí của bạn và có thể tắt dịch vụ vị trí sau khi ghép nối thành công.</string>
     <!--    Preferences -->
-    <string name="nav_plugin_preferences">Cài đặt tùy chọn plugin</string>
+    <string name="nav_plugin_preferences">Tùy chọn plugin</string>
     <!-- SmsCommunicator -->
     <string name="smscommunicator_missingsmspermission">Thiếu quyền nhắn tin SMS</string>
     <!-- About -->
