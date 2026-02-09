@@ -10,6 +10,7 @@
     <string name="pump_status_busy">Απασχολημένο</string>
     <string name="pump_status_suspended">Σε αναστολή</string>
     <string name="pump_status_executing_command">Εκτέλεση εντολής</string>
+    <!-- Commands -->
     <!-- PumpCommon - History Group -->
     <string name="history_group_basal">Βασικοί</string>
     <string name="history_group_configuration">Ρύθμιση παραμέτρων</string>
