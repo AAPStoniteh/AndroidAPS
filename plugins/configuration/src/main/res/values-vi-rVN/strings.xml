@@ -103,7 +103,7 @@
     <string name="old_master_password">Mật khẩu chính cũ</string>
     <string name="different_password_used">Tệp này đã được xuất và mã hóa bằng mật khẩu khác. Vui lòng nhập mật khẩu cũ để giải mã tệp.</string>
     <string name="master_password_will_be_replaced">Khi nhập thành công, mật khẩu chính hiện tại SẼ BỊ THAY THẾ bằng mật khẩu chính cũ!</string>
-    <string name="exported">Đã xuất cài đặt</string>
+    <string name="exported">Đã xuất cài đặt tùy chọn</string>
     <string name="exported_failed">Xuất tùy cài đặt tùy chọn thất bại!</string>
     <string name="filenotfound">Không tìm thấy tệp</string>
     <string name="goto_main_try_again">Vui lòng quay lại màn hình chính và thử lại.</string>
@@ -148,7 +148,7 @@
     <string name="prefdecrypt_wrong_password">Lỗi giải mã, mật khẩu đã nhập không thể giải mã tệp</string>
     <string name="prefdecrypt_issue_missing_file_hash">Tệp không có mã kiểm tra (checksum/hash), không thể xác minh tính hợp lệ của cài đặt!</string>
     <string name="prefdecrypt_issue_modified">Tệp đã bị chỉnh sửa sau khi xuất dữ liệu!</string>
-    <string name="prefdecrypt_issue_parsing">Lỗi giải mã: không thể đọc tệp cài đặt!</string>
+    <string name="prefdecrypt_issue_parsing">Lỗi giải mã: không thể đọc tệp cài đặt tùy chọn!</string>
     <string name="prefdecrypt_issue_wrong_pass">Lỗi giải mã, mật khẩu cung cấp không hợp lệ hoặc tệp cài đặt đã bị chỉnh sửa! Điều này có thể xảy ra nếu tệp nhập dữ liệu vào được xuất dữ liệu bằng mật khẩu khác.</string>
     <string name="prefdecrypt_issue_wrong_format">Thiếu cấu hình mã hóa, định dạng cài đặt không hợp lệ!</string>
     <string name="prefdecrypt_issue_wrong_algorithm">Thuật toán mã hóa không được hỗ trợ hoặc chưa được chỉ định!</string>
