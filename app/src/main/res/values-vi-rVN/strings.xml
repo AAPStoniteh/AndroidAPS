@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="nav_preferences_plugin">%1$s Cài đặt tùy chọn</string>
+    <string name="nav_preferences_plugin">Tùy chọn %1$s</string>
     <string name="nav_exit">Thoát</string>
     <string name="delta">Độ lệch</string>
     <string name="save">Lưu</string>
