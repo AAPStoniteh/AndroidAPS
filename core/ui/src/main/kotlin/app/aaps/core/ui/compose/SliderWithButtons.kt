@@ -4,7 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -183,86 +185,93 @@ fun SliderWithButtons(
         else                   -> ""
     }
 
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // Minus button
-        RepeatingIconButton(
-            onClick = {
-                val newPos = (currentPosition - dynamicStepPos).coerceAtLeast(0f)
-                val newValue = positionToValue(newPos)
-                val roundedValue = roundToStep(newValue, step).coerceIn(minValue, maxValue)
-                onValueChange(roundedValue)
-            },
-            enabled = value > minValue,
-            modifier = Modifier.size(32.dp)
+    BoxWithConstraints(modifier = modifier) {
+        val showSlider = maxWidth >= 180.dp
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Default.Remove,
-                contentDescription = "-",
-                modifier = Modifier.size(16.dp)
-            )
-        }
-
-        // Non-Linear Slider
-        Slider(
-            value = currentPosition,
-            onValueChange = { newPos ->
-                val newValue = positionToValue(newPos)
-                val rounded = roundToStep(newValue, step)
-                onValueChange(rounded.coerceIn(minValue, maxValue))
-            },
-            valueRange = 0f..1f,
-            modifier = Modifier.weight(1f)
-        )
-
-        // Plus button
-        RepeatingIconButton(
-            onClick = {
-                val newPos = (currentPosition + dynamicStepPos).coerceAtMost(1f)
-                val newValue = positionToValue(newPos)
-                val roundedValue = roundToStep(newValue, step).coerceIn(minValue, maxValue)
-                onValueChange(roundedValue)
-            },
-            enabled = value < maxValue,
-            modifier = Modifier.size(32.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "+",
-                modifier = Modifier.size(16.dp)
-            )
-        }
-
-        // Optional clickable value label
-        if (showValue) {
-            val displayText = when {
-                // Special formatting for minutes >= 60 as "Xh Ym"
-                isMinutesUnit                  -> formatMinutesAsDuration(value.roundToInt())
-
-                valueFormatResId != null       -> {
-                    if (formatAsInt) {
-                        stringResource(valueFormatResId, value.roundToInt())
-                    } else {
-                        stringResource(valueFormatResId, value)
-                    }
-                }
-
-                resolvedUnitLabel.isNotEmpty() -> "${valueFormat.format(value)} $resolvedUnitLabel"
-                else                           -> valueFormat.format(value)
+            // Minus button
+            RepeatingIconButton(
+                onClick = {
+                    val newPos = (currentPosition - dynamicStepPos).coerceAtLeast(0f)
+                    val newValue = positionToValue(newPos)
+                    val roundedValue = roundToStep(newValue, step).coerceIn(minValue, maxValue)
+                    onValueChange(roundedValue)
+                },
+                enabled = value > minValue,
+                modifier = Modifier.size(32.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Remove,
+                    contentDescription = "-",
+                    modifier = Modifier.size(16.dp)
+                )
             }
-            Text(
-                text = displayText,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.End,
-                modifier = Modifier
-                    .widthIn(min = if (isMinutesUnit || valueFormatResId != null || resolvedUnitLabel.isNotEmpty()) 70.dp else 40.dp)
-                    .clickable { showDialog = true }
-                    .padding(start = 4.dp)
-            )
+
+            if (showSlider) {
+                // Non-Linear Slider
+                Slider(
+                    value = currentPosition,
+                    onValueChange = { newPos ->
+                        val newValue = positionToValue(newPos)
+                        val rounded = roundToStep(newValue, step)
+                        onValueChange(rounded.coerceIn(minValue, maxValue))
+                    },
+                    valueRange = 0f..1f,
+                    modifier = Modifier.weight(1f)
+                )
+            } else {
+                Spacer(modifier = Modifier.weight(1f))
+            }
+
+            // Plus button
+            RepeatingIconButton(
+                onClick = {
+                    val newPos = (currentPosition + dynamicStepPos).coerceAtMost(1f)
+                    val newValue = positionToValue(newPos)
+                    val roundedValue = roundToStep(newValue, step).coerceIn(minValue, maxValue)
+                    onValueChange(roundedValue)
+                },
+                enabled = value < maxValue,
+                modifier = Modifier.size(32.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "+",
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+
+            // Optional clickable value label
+            if (showValue) {
+                val displayText = when {
+                    // Special formatting for minutes >= 60 as "Xh Ym"
+                    isMinutesUnit                  -> formatMinutesAsDuration(value.roundToInt())
+
+                    valueFormatResId != null       -> {
+                        if (formatAsInt) {
+                            stringResource(valueFormatResId, value.roundToInt())
+                        } else {
+                            stringResource(valueFormatResId, value)
+                        }
+                    }
+
+                    resolvedUnitLabel.isNotEmpty() -> "${valueFormat.format(value)} $resolvedUnitLabel"
+                    else                           -> valueFormat.format(value)
+                }
+                Text(
+                    text = displayText,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.primary,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier
+                        .widthIn(min = if (isMinutesUnit || valueFormatResId != null || resolvedUnitLabel.isNotEmpty()) 70.dp else 40.dp)
+                        .clickable { showDialog = true }
+                        .padding(start = 4.dp)
+                )
+            }
         }
     }
 
